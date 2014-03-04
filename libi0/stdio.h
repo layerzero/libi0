@@ -308,11 +308,11 @@ long input_q()
         }
     } while (is_checking == 1);
 
+input_q_exit:
     if (is_neg == 1) {
         n = 0 - n;
     }
 
-input_q_exit:
     return n;
 }
 
