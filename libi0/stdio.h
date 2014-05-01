@@ -27,10 +27,14 @@ void output_char(long c)
 #define put2(a,b) {put1(a); put1(b);}
 #define put4(a,b,c,d) {put2(a,b); put2(c,d);}
 #define put8(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);}
+#define writeln4(a,b,c,d) {put4(a,b,c,d); put1(C_n);}
 #define writeln6(a,b,c,d,e,f) {put4(a,b,c,d); put2(e,f); put1(C_n);}
 #define writelns6(a) {writeln6(a[0],a[1],a[2],a[3],a[4],a[5]);}
 #define writeln3(a,b,c) {put2(a,b); put2(c, C_n);}
 #define writelns4(a) {put4(a[0], a[1], a[2], a[3]); put1(C_n);}
+#define wr5cqn(a,b,c,d,e,q) {put4(a,b,c,d);output_q(q);put1(C_n);}
+#define wr8n(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);put1(C_n);}
+
 
 #define putq(a) output_q(a)
 
