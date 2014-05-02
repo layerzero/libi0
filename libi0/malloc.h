@@ -296,6 +296,10 @@ void* shalloc(long size)
     if(size <= 0)
         return (void*)NULL;
 
+#ifdef STANDALONE_SHALLOC
+    size = s_align_to_page(size);
+#endif
+
     //align to a large area
     align_size = s_align_to(size);
 
