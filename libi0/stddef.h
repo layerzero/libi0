@@ -13,8 +13,10 @@ register long reg4;
 
 
 // system confgiruation
-#define N_LONG_PER_PAGE 1024
-#define N_CHAR_PER_PAGE 4096
+#define PAGE_SIZE (4096)
+
+#define N_LONG_PER_PAGE (512)
+#define N_CHAR_PER_PAGE PAGE_SIZE
 
 // sizes
 #define size_t int64_t
