@@ -4,6 +4,10 @@
 #include "stddef.h"
 #include "stdio.h"
 
+// whether the shalloc is made standalone
+// if defined, each shalloc'ed range will be standalone
+#define STANDALONE_SHALLOC
+
 //remove following comment to get some debug output.
 // #define _DEBUG_MLC_
 
@@ -160,6 +164,10 @@ long s_align_to_ext(long size)
     return ((size - 1) / (S_ALIGN_TO_SIZE_EXT) + 1) * (S_ALIGN_TO_SIZE_EXT);
 }
 
+long s_align_to_page(long size)
+{
+    return (size + PAGE_SIZE - 1) / (PAGE_SIZE) * (PAGE_SIZE);
+}
 
 char *_get_new_sar(long size, long align_size)
 {
@@ -287,6 +295,10 @@ void* shalloc(long size)
     //if input SIZE is not positive value.
     if(size <= 0)
         return (void*)NULL;
+
+#ifdef STANDALONE_SHALLOC
+    size = s_align_to_page(size);
+#endif
 
     //align to a large area
     align_size = s_align_to(size);
@@ -421,6 +433,10 @@ addr_t shalloc_ext(size_t size, shalloc_option_t option)
     //if input SIZE is not positive value.
     if(size <= 0)
         return (void*)NULL;
+
+#ifdef STANDALONE_SHALLOC
+    size = s_align_to_page(size);
+#endif
 
     //align to a large area
     align_size = s_align_to_ext(size);
