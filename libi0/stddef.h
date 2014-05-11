@@ -184,6 +184,8 @@ register long reg4;
 
 #define L0_SPACE_INC        (0x400000000000)
 
+#define SPACE_START(I) (0x400000000000*I)
+
 // exit code
 #define NEW_RUNNER_ID_ADDR (0x100000410)
 #define EC_RANGE           (0x1000)
