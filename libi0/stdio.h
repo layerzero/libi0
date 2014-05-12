@@ -33,6 +33,7 @@ void output_char(long c)
 #define writeln3(a,b,c) {put2(a,b); put2(c, C_n);}
 #define writelns4(a) {put4(a[0], a[1], a[2], a[3]); put1(C_n);}
 #define wr5cqn(a,b,c,d,e,q) {put4(a,b,c,d);output_q(q);put1(C_n);}
+#define wr4n writeln4
 #define wr8n(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);put1(C_n);}
 
 
