@@ -82,12 +82,15 @@ register long reg4;
 // normal SR begin and end
 #define SR_N_BEGIN (SR_BEGIN)
 #define SR_N_END (SR_BEGIN + SR_N_SIZE - 1)
+// SR_N_END: currently 0x400000000 + 0x20000000000 -1  = 0x20400000000 -1 (around 2.2TB)
 
 // normal AMR (in physical memory) size
-// 2TB
 #define AMR_N_OFFSET_SIZE 0x20000000000
+// AMR_N_OFFSET_SIZE: currently 2TB
 
 #define AMR_N_OFFSET_BEGIN (SR_N_END + 1)
+// AMR_N_OFFSET_BEGIN: currently 0x20400000000 (around 2.2TB)
+
 #define AMR_N_OFFSET_END (AMR_N_OFFSET_BEGIN + AMR_N_OFFSET_SIZE - 1)
 
 // persistent AMR size
