@@ -35,7 +35,7 @@ void output_char(long c)
 #define wr5cqn(a,b,c,d,e,q) {put4(a,b,c,d);output_q(q);put1(C_n);}
 #define wr4n writeln4
 #define wr8n(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);put1(C_n);}
-
+#define wrln() {putchar(C_n);}
 
 #define putq(a) output_q(a)
 
@@ -344,7 +344,7 @@ long input_long(long *result)
     // try to get -
     do {
         c = __input_char();
-        if (c == EOF) goto input_q_exit;
+        if (c == EOF) goto input_long_exit;
         if (c == (long)'-') {
             c = __input_char();
             if (c <= (long)'9') {
@@ -368,7 +368,7 @@ long input_long(long *result)
         n = n * 10 + (long)c - (long)'0';
         // read next char
         c = __input_char();
-        if (c == EOF) goto input_q_exit;
+        if (c == EOF) goto input_long_exit;
         if (c > (long)'9') {
             is_checking = 0;
         }
