@@ -11,8 +11,8 @@
 #define C_t (9)
 
 // End of file character.
-#ifndef EOF                                                             
-# define EOF (-1)                                                       
+#ifndef EOF
+# define EOF (-1)
 #endif
 
 // print a char to STDOUT
@@ -81,7 +81,7 @@ output_q_j2:
     return;
 }
 
-// print a 64bit integer of at least d digits (filled 0s for padding) 
+// print a 64bit integer of at least d digits (filled 0s for padding)
 // to STDOUT
 void output_q_digits(long n, long d)
 {
@@ -290,18 +290,18 @@ long input_q()
                     is_neg = 1;
                     is_checking = 0;
                 }
-            } 
+            }
         } else if (c <= (long)'9') {
             if (c >= (long)'0') {
                 is_checking = 0;
             }
         }
     } while (is_checking == 1);
-    
+
     is_checking = 1;
     // already one digit in c
     do {
-        n = n * 10 + (long)c - (long)'0'; 
+        n = n * 10 + (long)c - (long)'0';
         // read next char
         c = __input_char();
         if (c == EOF) goto input_q_exit;
@@ -320,5 +320,71 @@ input_q_exit:
 
     return n;
 }
+
+// input a long from STDIN
+// Note: will also read in an extra char
+// return immediately after reading '\0'
+// do not recognize +
+// result is in *pq
+// return 0 on success
+// -1 on end of file
+long input_long(long *result)
+{
+    long c;
+    long is_neg;
+    long is_checking;
+    long n;
+    long ret;
+
+    n = 0;
+    is_neg = 0;
+    is_checking = 1;
+    ret = -1;
+
+    // try to get -
+    do {
+        c = __input_char();
+        if (c == EOF) goto input_q_exit;
+        if (c == (long)'-') {
+            c = __input_char();
+            if (c <= (long)'9') {
+                if (c >= (long)'0') {
+                    is_neg = 1;
+                    is_checking = 0;
+                    ret = 0;
+                }
+            }
+        } else if (c <= (long)'9') {
+            if (c >= (long)'0') {
+                is_checking = 0;
+                ret = 0;
+            }
+        }
+    } while (is_checking == 1);
+
+    is_checking = 1;
+    // already one digit in c
+    do {
+        n = n * 10 + (long)c - (long)'0';
+        // read next char
+        c = __input_char();
+        if (c == EOF) goto input_q_exit;
+        if (c > (long)'9') {
+            is_checking = 0;
+        }
+        if (c < (long)'0') {
+            is_checking = 0;
+        }
+    } while (is_checking == 1);
+
+input_long_exit:
+    if (is_neg == 1) {
+        n = 0 - n;
+    }
+
+    *result = n;
+    return ret;
+}
+
 
 #endif // I0STDIO_H
