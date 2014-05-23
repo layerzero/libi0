@@ -4,6 +4,27 @@
 # This script expand #PRINTSTR to calls to `put1()`s and
 # print the processed source code to STDOUT
 
+# example.c
+# #include "stdio.h"
+#
+# void main()
+# {
+#     #PRINTSTR hello world!
+#     wrln();
+#     commit;
+# }
+
+# after processing by ./strsplitter.bash example.c:
+# #include "stdio.h"
+#
+# void main()
+# {
+# put1('h');put1('e');put1('l');put1('l');put1('o');put1(' ');put1('w');put1('o');put1('r');put1('l');put1('d');put1('!');
+#     wrln();
+#     commit;
+# }
+
+
 if [ $# -lt 1 ]; then
     echo "Usage: $0 file"
     exit 1
