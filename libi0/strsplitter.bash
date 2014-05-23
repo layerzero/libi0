@@ -44,6 +44,12 @@ while read line; do
             echo -n "put1('${str:$i:1}');"
         done
         echo ""
+    elif [ "${nospace:0:8}" == "#PRINTLN" ]; then
+        str=${nospace:9}
+        for (( i=0; i<${#str}; i++ )); do
+            echo -n "put1('${str:$i:1}');"
+        done
+        echo "wrln();"
     else
         echo "$line"
     fi
