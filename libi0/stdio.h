@@ -386,5 +386,41 @@ input_long_exit:
     return ret;
 }
 
+#define IEEE754_SIGN   0x8000000000000000
+#define IEEE754_EXP    0x7FF0000000000000
+#define IEEE754_FRAC   0x000FFFFFFFFFFFFF
+#define IEEE754_2POW52 0x0010000000000000
+
+// N x 2 ^ M
+// Do not handle NaN, Inf, 0 and etc.
+void output_double_binary(double d)
+{
+    long exp;
+    long frac;
+    long sign;
+    long lv;
+
+    lv = *(long*)(&d);
+
+    sign = IEEE754_SIGN & lv;
+    if (sign == IEEE754_SIGN) {
+        putchar('-');
+    }
+
+    frac = (IEEE754_FRAC & lv) + IEEE754_2POW52;
+    output_q(frac);
+
+    putchar('*'); putchar('L2'); putchar('**'); putchar('(');
+
+    exp = IEEE754_EXP & lv;
+    exp = exp / IEEE754_2POW52; // better sith shift; compiler limitation
+
+    exp = exp - 1023 - 52;
+
+    output_q(exp);
+    putchar(')');
+
+    return;
+}
 
 #endif // I0STDIO_H
