@@ -392,30 +392,50 @@ input_long_exit:
 #define IEEE754_2POW52 0x0010000000000000
 
 // N x 2 ^ M
-// Do not handle NaN, Inf, 0 and etc.
 void output_double_binary(double d)
 {
     long exp;
+    long exp_raw;
     long frac;
+    long frac_raw;
     long sign;
     long lv;
 
     lv = *(long*)(&d);
 
     sign = IEEE754_SIGN & lv;
+    frac_raw = (IEEE754_FRAC & lv);
+    frac = frac_raw + IEEE754_2POW52;
+
+    exp_raw = IEEE754_EXP & lv;
+    exp_raw = exp_raw / IEEE754_2POW52; // better sith shift; compiler limitation
+    exp = exp_raw - 1023 - 52;
+
+    // handle 0
+    if (exp_raw == 0) {
+        if (frac_raw == 0) {
+            putchar('0');
+            return;
+        }
+    }
+
+    // hanlde Inf and NaNs
+    if (exp_raw == 0x7FF) {
+        if (frac_raw == 0) {
+            putchar('I'); putchar('n'); putchar('f');
+            return;
+        } else {
+            putchar('N'); putchar('a'); putchar('N'); putchar('s');
+        }
+    }
+
     if (sign == IEEE754_SIGN) {
         putchar('-');
     }
 
-    frac = (IEEE754_FRAC & lv) + IEEE754_2POW52;
     output_q(frac);
 
-    putchar('*'); putchar('L'); putchar('2'); putchar('*'); putchar('*');
-
-    exp = IEEE754_EXP & lv;
-    exp = exp / IEEE754_2POW52; // better sith shift; compiler limitation
-
-    exp = exp - 1023 - 52;
+    putchar('L'); putchar('*'); putchar('2'); putchar('*'); putchar('*');
 
     output_q(exp);
 
