@@ -410,7 +410,7 @@ void output_double_binary(double d)
     frac = (IEEE754_FRAC & lv) + IEEE754_2POW52;
     output_q(frac);
 
-    putchar('*'); putchar('L2'); putchar('**'); putchar('(');
+    putchar('*'); putchar('L2'); putchar('*'); putchar('*'); putchar('(');
 
     exp = IEEE754_EXP & lv;
     exp = exp / IEEE754_2POW52; // better sith shift; compiler limitation
