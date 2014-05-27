@@ -9,8 +9,7 @@
 #
 # void main()
 # {
-#     #PRINTSTR hello world!
-#     wrln();
+#     PRINTLN("hello world!")
 #     commit;
 # }
 
@@ -19,8 +18,7 @@
 #
 # void main()
 # {
-# put1('h');put1('e');put1('l');put1('l');put1('o');put1(' ');put1('w');put1('o');put1('r');put1('l');put1('d');put1('!');
-#     wrln();
+# put1('h');put1('e');put1('l');put1('l');put1('o');put1(' ');put1('w');put1('o');put1('r');put1('l');put1('d');put1('!');wrln();
 #     commit;
 # }
 
@@ -47,6 +45,18 @@ while read line; do
     elif [ "${nospace:0:8}" == "#PRINTLN" ]; then
         str=${nospace:9}
         for (( i=0; i<${#str}; i++ )); do
+            echo -n "put1('${str:$i:1}');"
+        done
+        echo "wrln();"
+    elif [ "${nospace:0:9}" == "PRINTSTR(" ]; then
+        str=${nospace:10}
+        for (( i=0; i<${#str}-3; i++ )); do
+            echo -n "put1('${str:$i:1}');"
+        done
+        echo ""
+    elif [ "${nospace:0:8}" == "PRINTLN(" ]; then
+        str=${nospace:9}
+        for (( i=0; i<${#str}-3; i++ )); do
             echo -n "put1('${str:$i:1}');"
         done
         echo "wrln();"
