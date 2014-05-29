@@ -187,7 +187,7 @@ register long reg4;
 
 #define L0_SPACE_INC        (0x400000000000)
 
-#define SPACE_START(I) (0x400000000000*I)
+#define SPACE_START(I) (0x400000000000*(I))
 
 // exit code
 #define NEW_RUNNER_ID_ADDR (0x100000410)
@@ -218,4 +218,3 @@ void task_id_to_ec_range(long id, long *base, long *len)
 }
 
 #endif // I0STDDEF_H
-
