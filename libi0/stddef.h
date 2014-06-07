@@ -42,6 +42,10 @@ register long reg4;
 // the ending address of SR
 #define SR_END		0x100000000000
 
+// Deja vu memory
+#define DEJAVU_MEM_BEGIN (0x400000000)
+#define DEJAVU_MEM_SIZE  (0x400000000)
+
 // otherwise 8TB
 #define PPM_12TB 1
 
