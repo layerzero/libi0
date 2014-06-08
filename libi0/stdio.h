@@ -426,6 +426,7 @@ void output_double_binary(double d)
             return;
         } else {
             putchar('N'); putchar('a'); putchar('N'); putchar('s');
+            return;
         }
     }
 
