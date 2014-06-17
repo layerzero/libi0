@@ -32,11 +32,6 @@
 
 #define putq(a) output_q(a)
 
-#define IEEE754_SIGN   0x8000000000000000
-#define IEEE754_EXP    0x7FF0000000000000
-#define IEEE754_FRAC   0x000FFFFFFFFFFFFF
-#define IEEE754_2POW52 0x0010000000000000
-
 // print a char to STDOUT
 void output_char(long c);
 
@@ -82,6 +77,11 @@ long input_q();
 // return 0 on success
 // -1 on end of file
 long input_long(long *result);
+
+#define IEEE754_SIGN   0x8000000000000000
+#define IEEE754_EXP    0x7FF0000000000000
+#define IEEE754_FRAC   0x000FFFFFFFFFFFFF
+#define IEEE754_2POW52 0x0010000000000000
 
 // N x 2 ^ M
 void output_double_binary(double d);
