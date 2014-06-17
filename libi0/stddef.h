@@ -29,13 +29,6 @@ register long reg4;
 // Note: these configurations should be consistent with the sys_config.h of
 // L0
 
-// Note: deprecated: LIR_ADDRESS is the starting address of LIR
-// #define LIR_ADDRESS  (0x100004000)
-// #define LIRS_MAX_LEN (0xc000)
-
-// // LIRS is for users
-// #define LIRS ((char*)LIR_ADDRESS))
-
 // the starting address of SR
 // #define SR_BEGIN	0x400000000
 #define SR_BEGIN	0x800000000
@@ -45,6 +38,11 @@ register long reg4;
 // Deja vu memory
 #define DEJAVU_MEM_BEGIN (0x400000000)
 #define DEJAVU_MEM_SIZE  (0x400000000)
+
+// Phasing cache
+#define PHASING_CACHE_ADDR (0x200200000L)
+#define PHASING_CACHE_LEN   (0xc0000000L)
+
 
 // otherwise 8TB
 #define PPM_12TB 1
