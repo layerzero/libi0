@@ -204,10 +204,17 @@ register long reg4;
 #define NEW_RUNNER_ID_ADDR (0x100000410)
 #define EC_RANGE           (0x1000)
 
+// functions
+
+// get current task's ID
 long get_my_task_id();
 
+// get the new tasks' ID.
+// should be called just after invoking "runner" or spawn/spawnx
 long get_new_task_id();
 
+// calculate the exit code range from the ID
+// len in bytes
 void task_id_to_ec_range(long id, long *base, long *len);
 
 #endif // I0STDDEF_H
