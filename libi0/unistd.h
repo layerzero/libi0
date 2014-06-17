@@ -11,7 +11,7 @@
 void usleep(useconds_t us)
 {
     // set system call id
-    *(useconds_t*) SYSCALL_ID_ADDR = (useconds_t) SYSCALL_ID_USLEEP;
+    *(SYSCALL_ID_TYPE*) SYSCALL_ID_ADDR = (SYSCALL_ID_TYPE) SYSCALL_ID_USLEEP;
 
     // set system call input arguments
     *(useconds_t*) SYSCALL_COMM_AREA_ADDR = us;
