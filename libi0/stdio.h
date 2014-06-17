@@ -15,6 +15,9 @@
 # define EOF (-1)
 #endif
 
+// print a char to STDOUT
+void output_char(long c);
+
 #define putchar(c) output_char(c)
 #define put1(c) putchar(c)
 #define put2(a,b) {put1(a); put1(b);}
@@ -31,9 +34,6 @@
 #define wrln() {putchar(C_n);}
 
 #define putq(a) output_q(a)
-
-// print a char to STDOUT
-void output_char(long c);
 
 // print a 64bit integer to STDOUT
 void output_q(long n);
