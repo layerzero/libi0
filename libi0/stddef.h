@@ -169,6 +169,12 @@ register long reg4;
 #define SYSCALL_ID_USLEEP  (2)
 #define SYSCALL_ID_GETTIME (7)
 
+// phasing cache
+#define SYSCALL_ID_PC_GET    (8)
+#define SYSCALL_ID_PC_WRITE  (9)
+#define SYSCALL_ID_PC_DELETE (10)
+#define SYSCALL_ID_PC_SYNC   (11)
+
 // streaming I/O
 #define SYSCALL_ID_SREAD   (3)
 #define SYSCALL_ID_SWRITE  (4)
