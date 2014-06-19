@@ -443,4 +443,125 @@ void output_double_binary(double d)
     return;
 }
 
+void output_double(double d)
+{
+    long n;
+    long i;
+
+    if (d < 0.0) {
+        d = 0.0 - d;
+        putchar('-');
+    }
+
+    n = (long)d;
+    putq(n);
+    d = d - (double)n;
+
+    putchar('.');
+
+    for (i = 0; i < 16; i = i + 1) {
+        d = d * 10.0;
+        n = (long)d;
+        putq(n);
+        d = d - (double)n;
+    }
+
+    return;
+}
+
+// input a double from STDIN
+// Note: will also read in an extra char
+// return immediately after reading '\0'
+// do not recognize +
+// must leading with 0.xxx or nnn.xxx
+// that is, .xxx is not supported
+// result is in *result
+// return 0 on success
+// -1 on end of file
+long input_double(double *result)
+{
+    long c;
+    long is_neg;
+    long is_checking;
+    long n;
+    double d;
+    double scale;
+
+    long ret;
+
+    n = 0;
+    d = 0.0;
+    is_neg = 0;
+    is_checking = 1;
+    ret = -1;
+
+    // try to get -
+    do {
+        c = __input_char();
+        if (c == EOF) goto input_double_exit;
+        if (c == (long)'-') {
+            c = __input_char();
+            if (c <= (long)'9') {
+                if (c >= (long)'0') {
+                    is_neg = 1;
+                    is_checking = 0;
+                    ret = 0;
+                }
+            }
+        } else if (c <= (long)'9') {
+            if (c >= (long)'0') {
+                is_checking = 0;
+                ret = 0;
+            }
+        }
+    } while (is_checking == 1);
+
+    is_checking = 1;
+    // already one digit in c
+    // read the integer part
+    do {
+        n = n * 10 + (long)c - (long)'0';
+        // read next char
+        c = __input_char();
+        if (c == EOF) goto input_double_exit;
+        if (c == (long)'.') goto input_double_after_dot;
+        if (c > (long)'9') {
+            is_checking = 0;
+        }
+        if (c < (long)'0') {
+            is_checking = 0;
+        }
+    } while (is_checking == 1);
+
+input_double_after_dot:
+    is_checking = 1;
+    scale = 0.1;
+    do {
+        // read next char
+        c = __input_char();
+        if (c == EOF) goto input_double_exit;
+        if (c <= (long)'9') {
+            if (c >= (long)'0') {
+                c = (long)c - (long)'0';
+                d = d + scale * (double)c;
+                scale = scale / 10.0;
+            } else {
+                is_checking = 0;
+            }
+        } else {
+            is_checking = 0;
+        }
+        n = n * 10 + (long)c - (long)'0';
+    } while (is_checking == 1);
+
+input_double_exit:
+    d = (double)n + d;
+    if (is_neg == 1) {
+        d = 0.0 - d;
+    }
+
+    *result = d;
+    return ret;
+}
+
 #endif // I0STDIO_H
