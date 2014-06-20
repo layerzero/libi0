@@ -534,6 +534,8 @@ long input_double(double *result)
             is_checking = 0;
         }
     } while (is_checking == 1);
+    // if there is '.', it is jumpted before this
+    goto input_double_exit;
 
 input_double_after_dot:
     is_checking = 1;
@@ -553,11 +555,11 @@ input_double_after_dot:
         } else {
             is_checking = 0;
         }
-        n = n * 10 + (long)c - (long)'0';
     } while (is_checking == 1);
 
 input_double_exit:
-    d = (double)n + d;
+    d = d + (double)n;
+
     if (is_neg == 1) {
         d = 0.0 - d;
     }
