@@ -38,6 +38,8 @@ void output_char(long c)
 #define wrln() {putchar(C_n);}
 
 #define putq(a) output_q(a)
+#define output_long(a) output_q(a)
+#define output_long_hex(a) output_q_hex(a)
 
 // print a 64bit integer to STDOUT
 void output_q(long n)
