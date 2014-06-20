@@ -23,6 +23,11 @@ void output_char(long c)
 }
 
 #define putchar(c) output_char(c)
+#define putdouble(a) output_double(a)
+#define putlong(a) output_long(a)
+
+#define putq(a) output_q(a)
+
 #define put1(c) putchar(c)
 #define put2(a,b) {put1(a); put1(b);}
 #define put4(a,b,c,d) {put2(a,b); put2(c,d);}
@@ -37,9 +42,9 @@ void output_char(long c)
 #define wr8n(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);put1(C_n);}
 #define wrln() {putchar(C_n);}
 
-#define putq(a) output_q(a)
 #define output_long(a) output_q(a)
 #define output_long_hex(a) output_q_hex(a)
+
 
 // print a 64bit integer to STDOUT
 void output_q(long n)
