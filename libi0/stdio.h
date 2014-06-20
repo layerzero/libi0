@@ -1,6 +1,8 @@
 #ifndef I0STDIO_H
 #define I0STDIO_H
 
+#include "math.h"
+
 #define _DEBUG_I0STDIO_no
 
 // consts
@@ -494,13 +496,16 @@ long input_double(double *result)
     double d;
     double scale;
 
+    long rt;
     long ret;
+    long e;
 
     n = 0;
     d = 0.0;
     is_neg = 0;
     is_checking = 1;
     ret = -1;
+    e = 0;
 
     // try to get -
     do {
@@ -564,6 +569,21 @@ input_double_after_dot:
 
 input_double_exit:
     d = d + (double)n;
+
+    if (c == 'E') {
+        rt = input_long(&e);
+        if (rt != 0) e = 0;
+    } if (c == 'e') {
+        rt = input_long(&e);
+        if (rt != 0) e = 0;
+    }
+
+    if (e > 0) {
+        // d = d * 10^e
+        d = d * (double)(ipow(10, e));
+    } else if (e < 0) {
+        d = d / (double)(ipow(10, e));
+    }
 
     if (is_neg == 1) {
         d = 0.0 - d;
