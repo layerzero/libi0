@@ -1,19 +1,23 @@
 #ifndef FASTEXP_H
 #define FASTEXP_H
 
-// modifed version from http://www.chokkan.org/software/dist/fastexp.c.html
 #define LOG2E (1.4426950408889634073599)
-void exp_remez13_05_05(double value)
+#define C1 (6.93145751953125E-1)
+#define C2 (1.42860682030941723212E-6)
+
+// modifed version from http://www.chokkan.org/software/dist/fastexp.c.html
+double exp_remez13_05_05(double value)
 {
-    int n;
+    long n;
     double a, px, x;
-    double u;
+    double d;
 
     x = value;
 
     /* n = round(x / log 2) */
     a = LOG2E * x + 0.5;
-    n = (int)a;
+    // n = (int)a;
+    n = (long)a;
     // n -= (a < 0);
     if (a < 0) n = n - 1;
 
@@ -51,13 +55,16 @@ void exp_remez13_05_05(double value)
     a = a * x;
     a = a + 1.0000000000000000000857966908786376708355989802095;
 
-    // Build 2^n in double.
-    u.d = 0;
+    // build 2^n in double.
+    d = 0;
     n = n + 1023;
     // u.s[3] = (unsigned short)((n << 4) & 0x7FF0);
-    u.s[3] = (unsigned short)((n * 16) & 0x7FF0);
+    n = (n * 16) & 0x7FF0;
+    // n = n << 16
+    n = n * 0x10000;
+    *(long*)&d = n;
 
-    return a * u.d;
+    return a * d;
 }
 
 #endif // FASTEXP_H
