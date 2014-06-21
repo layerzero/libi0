@@ -12,6 +12,8 @@ double exp_remez13_05_05(double value)
     double a, px, x;
     double d;
 
+    // putchar('D');putdouble(value);wrln();
+
     x = value;
 
     /* n = round(x / log 2) */
@@ -20,6 +22,8 @@ double exp_remez13_05_05(double value)
     n = (long)a;
     // n -= (a < 0);
     if (a < 0) n = n - 1;
+
+    // putchar('D');putlong(n);wrln();
 
     /* x -= n * log2 */
     px = (double)n;
@@ -55,14 +59,21 @@ double exp_remez13_05_05(double value)
     a = a * x;
     a = a + 1.0000000000000000000857966908786376708355989802095;
 
+    // putchar('D');putdouble(a);wrln();
+
     // build 2^n in double.
-    d = 0;
-    n = n + 1023;
-    // u.s[3] = (unsigned short)((n << 4) & 0x7FF0);
-    n = (n * 16) & 0x7FF0;
-    // n = n << 16
-    n = n * 0x10000;
-    *(long*)&d = n;
+    // d = 0;
+    // n = n + 1023;
+    // // u.s[3] = (unsigned short)((n << 4) & 0x7FF0);
+    // n = (n * 16) & 0x7FF0;
+    // // n = n << 16
+    // n = n * 0x10000;
+    // *((long*)&d) = n;
+
+    n = ipow(2, n);
+    d = (double)n;
+
+    // putchar('D');putdouble(d);wrln();
 
     return a * d;
 }
