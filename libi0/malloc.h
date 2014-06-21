@@ -69,10 +69,18 @@ void _output_debug(long x);
 
 void init_PR_var();
 
+//---------------------Shalloc----------------------------
+//Shalloc Area Range = SAR
+/*struct Shalloc_Area_Range {
+    char *BASE;
+    char *END; //first addr that out of the area range 
+    char *LTP; //local top pointer
+};*/
 char *_syscall_malloc_ext(long size, shalloc_option_t option);
 
 char *_syscall_malloc(long size);
 
+//align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
 long s_align_to(long size);
 
 long s_align_to_ext(long size);
@@ -83,10 +91,14 @@ char *_get_new_sar(long size, long align_size);
 
 char *_get_new_sar_ext(long size, long align_size, shalloc_option_t option);
 
+//search in SAR_ARRAY
 char *_get_from_sar_array(long size);
 
 void* shalloc(long size);
 
+//----------------------Pralloc-------------------------
+
+//align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
 long p_align_to(long size);
 
 void *_get_new_pa(long size);
@@ -95,6 +107,9 @@ void *pralloc(long size);
 
 addr_t shalloc_ext(size_t size, shalloc_option_t option);
 
+// addr is the addr_t returned by shalloc_ext
+// nth is the nth range in the replication group.
+// addr is the 0th replica
 addr_t shalloced_replicas(addr_t addr, size_t nth);
 
 #endif //I0MALLOC_H

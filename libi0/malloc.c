@@ -20,7 +20,7 @@ void _output_debug(long x)
             vec[i] = x - t * 16 + '0';
         else
             vec[i] = x - t * 16 - 10 + 'A';
-
+        
         x = t;
         i = i + 1;
     }
@@ -40,14 +40,14 @@ void init_PR_var()
     *(long*) PR_PA_TP = (long) PR_PA_BASE;
     *(long*) PR_IS_USED = 1;
 
-    return;
+    return; 
 }
 
 //---------------------Shalloc----------------------------
 //Shalloc Area Range = SAR
 /*struct Shalloc_Area_Range {
     char *BASE;
-    char *END; //first addr that out of the area range
+    char *END; //first addr that out of the area range 
     char *LTP; //local top pointer
 };*/
 
@@ -55,15 +55,15 @@ char *_syscall_malloc_ext(long size, shalloc_option_t option)
 {
     //set system call id
     *(long*) SYSCALL_ID_ADDR = (long) SYSCALL_ID_MALLOC_EXT;
-
+    
     //set system call input arguments
     *(long*) SYSCALL_COMM_AREA_ADDR = size;
-
+    
     *(long*) ((long)SYSCALL_COMM_AREA_ADDR + sizeof_shalloc_option_t) = option;
-
+    
     //call soft interrupt of system call
     asm("int 0x80");
-
+   
     //get output value of system call
     return *(char **) SYSCALL_COMM_AREA_ADDR;
 }
@@ -73,13 +73,13 @@ char *_syscall_malloc(long size)
 {
     //set system call id
     *(long*) SYSCALL_ID_ADDR = (long) SYSCALL_ID_MALLOC;
-
+    
     //set system call input arguments
     *(long*) SYSCALL_COMM_AREA_ADDR = size;
-
+    
     //call soft interrupt of system call
     asm("int 0x80");
-
+   
     //get output value of system call
     return *(char **) SYSCALL_COMM_AREA_ADDR;
 }
@@ -114,7 +114,7 @@ char *_get_new_sar(long size, long align_size)
 
     //call a system call to ask for new SAR
     ret = _syscall_malloc(align_size);
-
+      
     //push back this new SAR as the last element of SAR_ARRAY
     last_element = *(long*) PR_SAR_ARRAY_LAST_ELEMENT;
 
@@ -182,7 +182,7 @@ char *_get_from_sar_array(long size)
     long *sar_array_element;
     long old_value;
 
-#ifdef _DEBUG_MLC_
+#ifdef _DEBUG_MLC_    
      _output_debug((long)PR_SAR_ARRAY_BASE);
      _output_debug(*(long*)(PR_SAR_ARRAY_LAST_ELEMENT));
      *(long*)STDOUT = 'Z';
@@ -190,14 +190,14 @@ char *_get_from_sar_array(long size)
 #endif
 
     last_element = *(long*) PR_SAR_ARRAY_LAST_ELEMENT;
-
+    
 
     for(sar_array_element = (long*)PR_SAR_ARRAY_BASE;
         (long)sar_array_element <= last_element;
         sar_array_element = sar_array_element + 24)
-    {
-
-#ifdef _DEBUG_MLC_
+    { 
+ 
+#ifdef _DEBUG_MLC_ 
         _output_debug(*sar_array_element);
         _output_debug(*(sar_array_element + 8));
         _output_debug(*(sar_array_element + 16));
@@ -264,14 +264,14 @@ void* shalloc(long size)
         //search from SAR_ARRAY, to get requested memory
         ret = _get_from_sar_array(size);
 
-#ifdef _DEBUG_MLC_
+#ifdef _DEBUG_MLC_        
         _output_debug((long)ret);
         *(long*) STDOUT = 'T';
         *(long*) STDOUT = 10;
 #endif
 
         //if SIZE is too large to allocated in SAR_ARRAY,
-        //then ask system for a shalloc area.
+        //then ask system for a shalloc area. 
         if(ret == (char*) NULL)
         {
             if ( (long)((*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24) < (long)PR_SAR_ARRAY_END )
@@ -280,11 +280,11 @@ void* shalloc(long size)
                 //get new SAR from system.
                 ret = _get_new_sar(size, align_size);
             }
-            else
+            else 
                 ret = (char *)NULL;
-                //TODO: not return null.
+                //TODO: not return null. 
                 //LATS_ELEMENT should restart from BASE, to overlap oldest element.
-
+            
         }
     }
 
@@ -353,10 +353,10 @@ void *pralloc(long size)
     {
         init_PR_var();
     }
-
+    
     //get new pralloc area from system.
     ret = _get_new_pa(align_size);
-
+    
     return ret;
 }
 
@@ -400,7 +400,7 @@ addr_t shalloc_ext(size_t size, shalloc_option_t option)
         // skip SAR_ARRAY
         ret = (char*)NULL;
 
-        //then ask system for a shalloc area.
+        //then ask system for a shalloc area. 
         if(ret == (char*) NULL)
         {
             if ( (long)((*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24) < (long)PR_SAR_ARRAY_END )
@@ -409,11 +409,11 @@ addr_t shalloc_ext(size_t size, shalloc_option_t option)
                 //get new SAR from system.
                 ret = _get_new_sar_ext(size, align_size, option);
             }
-            else
+            else 
                 ret = (char *)NULL;
-                //TODO: not return null.
+                //TODO: not return null. 
                 //LATS_ELEMENT should restart from BASE, to overlap oldest element.
-
+            
         }
     }
 

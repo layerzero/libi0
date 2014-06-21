@@ -1,6 +1,8 @@
 #ifndef I0STDIO_H
 #define I0STDIO_H
 
+#include "math.h"
+
 #define _DEBUG_I0STDIO_no
 
 // consts
@@ -19,6 +21,11 @@
 void output_char(long c);
 
 #define putchar(c) output_char(c)
+#define putdouble(a) output_double(a)
+#define putlong(a) output_long(a)
+
+#define putq(a) output_q(a)
+
 #define put1(c) putchar(c)
 #define put2(a,b) {put1(a); put1(b);}
 #define put4(a,b,c,d) {put2(a,b); put2(c,d);}
@@ -33,7 +40,9 @@ void output_char(long c);
 #define wr8n(a,b,c,d,e,f,g,h) {put4(a,b,c,d); put4(e,f,g,h);put1(C_n);}
 #define wrln() {putchar(C_n);}
 
-#define putq(a) output_q(a)
+#define output_long(a) output_q(a)
+#define output_long_hex(a) output_q_hex(a)
+
 
 // print a 64bit integer to STDOUT
 void output_q(long n);
@@ -85,5 +94,18 @@ long input_long(long *result);
 
 // N x 2 ^ M
 void output_double_binary(double d);
+
+void output_double(double d);
+
+// input a double from STDIN
+// Note: will also read in an extra char
+// return immediately after reading '\0'
+// do not recognize +
+// must leading with 0.xxx or nnn.xxx
+// that is, .xxx is not supported
+// result is in *result
+// return 0 on success
+// -1 on end of file
+long input_double(double *result);
 
 #endif // I0STDIO_H
