@@ -1,16 +1,10 @@
 #ifndef I0STDIO_H
 #define I0STDIO_H
 
+#include "stddef.h"
 #include "math.h"
 
 #define _DEBUG_I0STDIO_no
-
-// consts
-#define C_0 (0)
-#define C_n (10)
-#define C_r (13)
-#define C_CR (13)
-#define C_t (9)
 
 // End of file character.
 #ifndef EOF
@@ -328,6 +322,36 @@ input_q_exit:
     }
 
     return n;
+}
+
+// -1 reach EOF
+// 0 success
+long input_line(char *buf, long maxlen, long *len)
+{
+    long n;
+    long ret;
+    long c;
+
+    ret = 0;
+
+    maxlen = maxlen - 1; // leave space for '\0'
+    n = 0;
+
+    do {
+        c = __input_char();
+        if (c == EOF) {
+            ret = -1;
+            goto input_line_exit;
+        }
+        if (c == C_n) goto input_line_exit;
+        buf[n] = (char)c;
+        n = n + 1;
+    } while (n < maxlen);
+
+input_line_exit:
+    buf[n] = (char)C_0;
+    *len = n;
+    return ret;
 }
 
 // input a long from STDIN

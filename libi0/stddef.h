@@ -4,6 +4,13 @@
 
 #include "stdint.h"
 
+// consts
+#define C_0 (0)
+#define C_n (10)
+#define C_r (13)
+#define C_CR (13)
+#define C_t (9)
+
 // registers only supports 4 yet
 
 register long reg1;
