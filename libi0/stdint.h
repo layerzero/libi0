@@ -10,4 +10,6 @@
 #define sizeof_uint64_t sizeof_long
 #define sizeof_int64_t sizeof_long
 
+#define sizeof_char 1
+
 #endif // STDINT
