@@ -3,10 +3,10 @@
 all: libi0rt.o malloc.o
 
 libi0rt.o: stdlib.c sio.h stddef.h stdint.h stdio.h string.h time.h unistd.h
-	$(CC0_CC) -o libi0rt.o stdlib.c
+	$(CC0) -o libi0rt.o stdlib.c
 
 malloc.o: malloc.c libi0rt.o
-	$(CC0_CC) -o malloc.o malloc.c
+	$(CC0) -o malloc.o malloc.c
 
 clean:
-	rm -rf libi0rt.o malloc.o
+	rm -rf libi0rt.o malloc.o stdlib.c.tmp malloc.c.tmp
