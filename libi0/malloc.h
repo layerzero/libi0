@@ -76,6 +76,7 @@ void init_PR_var();
     char *END; //first addr that out of the area range 
     char *LTP; //local top pointer
 };*/
+
 char *_syscall_malloc_ext(long size, shalloc_option_t option);
 
 char *_syscall_malloc(long size);
@@ -105,6 +106,9 @@ void *_get_new_pa(long size);
 
 void *pralloc(long size);
 
+// allocate memory ranges according the the option
+// on success, return the allocated address
+// on fail, return NULL
 addr_t shalloc_ext(size_t size, shalloc_option_t option);
 
 // addr is the addr_t returned by shalloc_ext

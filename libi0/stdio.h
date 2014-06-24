@@ -1,16 +1,10 @@
 #ifndef I0STDIO_H
 #define I0STDIO_H
 
+#include "stddef.h"
 #include "math.h"
 
 #define _DEBUG_I0STDIO_no
-
-// consts
-#define C_0 (0)
-#define C_n (10)
-#define C_r (13)
-#define C_CR (13)
-#define C_t (9)
 
 // End of file character.
 #ifndef EOF
@@ -66,6 +60,9 @@ void output_str(char* s);
 
 // input a char from STDIN
 #define __input_char() *(long*)0x100000200
+
+// // for debug only
+// long __input_char();
 
 #define getc1 input_char
 
