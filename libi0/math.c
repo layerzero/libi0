@@ -13,4 +13,3 @@ long ipow(long base, long exp)
 
     return result;
 }
-

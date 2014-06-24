@@ -72,4 +72,3 @@ double exp_remez13_05_05(double value)
 
     return a * d;
 }
-

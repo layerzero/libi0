@@ -589,4 +589,3 @@ input_double_exit:
     *result = d;
     return ret;
 }
-

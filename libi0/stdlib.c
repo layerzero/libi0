@@ -85,4 +85,3 @@ str_to_long_exit:
     *result = n;
     return ret;
 }
-

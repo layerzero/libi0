@@ -151,4 +151,3 @@ sid_t slisten(size_t port)
 
     return sid;
 }
-

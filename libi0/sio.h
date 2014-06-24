@@ -31,4 +31,3 @@ size_t swrite(sid_t sid, char *addr, size_t nbyte);
 sid_t slisten(size_t port);
 
 #endif // SIO_H
-

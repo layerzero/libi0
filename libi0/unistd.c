@@ -14,5 +14,3 @@ void usleep(useconds_t us)
 
     return;
 }
-
-#endif // UNISTD_H

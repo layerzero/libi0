@@ -23,4 +23,3 @@ void task_id_to_ec_range(long id, long *base, long *len)
     *len = EC_RANGE;
     return;
 }
-

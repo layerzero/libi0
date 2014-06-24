@@ -153,4 +153,3 @@ long get_time_diff_and_update(time_t *base_sec, long *base_nsec)
 
     return 0;
 }
-

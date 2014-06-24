@@ -168,17 +168,6 @@ long __memcmp_se(char* s1, char* s2, long n)
     return ret_value;
 }
 
-// To use this function, the program should define 
-// ENABLE_MEMCMP_SE
-// before #include "libi0/string.h"; otherwise, the compilation fails.
-// memcmp with side effect: registers are changed
-// faster but need to save the registers by the program
-#ifdef ENABLE_MEMCMP_SE
-#define memcmp_se(s1, s2, n) __memcmp_se(s1, s2, n)
-#else
-#define memcmp_se(s1, s2, n) _Pragma ("GCC error \"To use memcmp_se, you must define ENABLE_MEMCMP_SE to indicate that you are aware its side effects.\"")
-#endif
-
 long memcmp(char* s1, char* s2, long n)
 {
     long ret_value;
@@ -221,4 +210,3 @@ void memset0(char* m, long len)
     }
     return;
 }
-
