@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 all:
-	$(CC0) $(CC0FLAGS) $(CC0DEBUG) libi0rt.c -o libi0rt.o
+	$(CC0) $(CC0FLAGS) $(CC0DEBUG) libcrt.c -o libcrt.o
 
 clean:
-	rm -rf libi0rt.o libi0rt.c.tmp
+	rm -rf libcrt.o libcrt.c.tmp
