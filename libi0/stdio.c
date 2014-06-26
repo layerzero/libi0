@@ -436,27 +436,19 @@ void output_double(double d)
     long n;
     long i;
 
-    double d1;
-
-    if (d < 0.0) {
-        d1 = 0.0 - d;
-    } else {
-        d1 = d;
-    }
-
-    if (d1 > 9.22E18) {
-        output_double_binary(d);
-        return;
-    }
-
-    if (d1 < 0.0000001) {
-        output_double_binary(d);
-        return;
-    }
-
     if (d < 0.0) {
         d = 0.0 - d;
         putchar('-');
+    }
+
+    if (d > 9220000000000000000.0) {
+        output_double_binary(d);
+        return;
+    }
+
+    if (d < 0.0000001) {
+        output_double_binary(d);
+        return;
     }
 
     n = (long)d;
