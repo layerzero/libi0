@@ -9,8 +9,8 @@ long strncmp(char *s1, char *s2, long n)
     // i1 = s1
     // i2 = s2
     // while i2 < tn {
-    //    br:e:sq a i1, i2, continue
-    //    br:sl:sq a i1, i2, less
+    //    br:e,se a i1, i2, continue
+    //    br:sl,se a i1, i2, less
     //    br:j more
     //  continue:
     //    i1 = i1 + 8
@@ -60,9 +60,9 @@ strncmp_while:
 #endif
     // while i2 < tn {
     //    => if tn <= i2, jump to strncmp_e
-    // asm("br:le:sq a 0x200000030, 0x200000028, $0x400001832");
-    asm("br:le:sq a 0x200000030, 0x200000028, $strncmp_e");
-    //    br:e:sq a i1, i2, continue
+    // asm("br:le:se a 0x200000030, 0x200000028, $0x400001832");
+    asm("br:le,se a 0x200000030, 0x200000028, $strncmp_e");
+    //    br:e:se a i1, i2, continue
     //    => jump to strncmp_cont
     //
     // if ((*(long*)0x210000000) == (*(long*)0x210000008)) {
@@ -75,23 +75,23 @@ strncmp_while:
     output_q(**(long**)0x200000028);
     output_char(C_n);
 #endif
-    // asm("br:e:sq a (0x200000020), (0x200000028), $0x400001894");
-    asm("br:ne:sq a (0x200000020), (0x200000028), $strncmp_ne");
+    // asm("br:e:se a (0x200000020), (0x200000028), $0x400001894");
+    asm("br:ne,se a (0x200000020), (0x200000028), $strncmp_ne");
     //  continue:
     //    i1 = i1 + 8
-    asm("add:sq 0x200000020, $8, 0x200000020");
+    asm("add:se 0x200000020, $8, 0x200000020");
     //    i2 = i2 + 8
-    asm("add:sq 0x200000028, $8, 0x200000028");
+    asm("add:se 0x200000028, $8, 0x200000028");
     //   => jump to strncmp_while
     asm("br:j a $strncmp_while");
- 
+
 strncmp_ne:
 
 
-    //    br:sl:sq a i1, i2, less
+    //    br:sl:se a i1, i2, less
     //    => jump to strncmp_l
-    // asm("br:sl:sq a 0x200000020, 0x200000028, $0x4000017AD");
-    asm("br:sl:sq a 0x200000020, 0x200000028, $strncmp_l");
+    // asm("br:sl:se a 0x200000020, 0x200000028, $0x4000017AD");
+    asm("br:sl,se a 0x200000020, 0x200000028, $strncmp_l");
 
     //    br:j more
     //    => jump to strncmp_g
@@ -119,7 +119,7 @@ strncmp_e:
     *(long *)(0x100000208) = '=';
 #endif
     return 0;
-   
+
     // just make compiler print out addresses
     goto strncmp_g;
     goto strncmp_l;
@@ -148,7 +148,7 @@ void memcpy(char* src, long len, char* dst)
         dst[src_n] = src[src_n];
         src_n = src_n + 1;
     }
- 
+
     return;
 }
 
