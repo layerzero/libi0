@@ -25,7 +25,7 @@ double exp(double x)
     sreg2 = reg2;
 
     reg1 = *(long*)&x;
-    asm(exp:e,fd reg1, reg2);
+    asm("exp:e,fd reg1, reg2");
     *(long*)&ret = reg2;
 
     reg1 = sreg1;
