@@ -4,6 +4,9 @@
 
 #include "stdint.h"
 
+// task marker
+#define __task__
+
 // consts
 #define C_0 (0)
 #define C_n (10)
