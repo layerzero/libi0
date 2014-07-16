@@ -4,5 +4,6 @@
 
 long ipow(long base, long exp);
 double exp(double x);
+double sqrt(double x);
 
 #endif // I0MATH_H

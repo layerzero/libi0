@@ -33,3 +33,16 @@ double exp(double x)
 
     return ret;
 }
+
+double sqrt(double x)
+{
+    double n;
+    double y;
+    n = x / 2.0;
+    y = 0.0;
+    while(n != y) {
+        y = n;
+        n = (n + x/n) / 2.0;
+    }
+    return n;
+}
