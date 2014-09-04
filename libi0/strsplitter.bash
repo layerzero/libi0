@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # A script to expand #PRINTSTR macro in C0 program.
 # This script expand #PRINTSTR to calls to `put1()`s and
