@@ -110,5 +110,7 @@ long systemEx(char *command, option_block_t option)
 
 long system(char *command)
 {
-    return systemEx(command, NULL);
+    long rt;
+    rt = systemEx(command, NULL);
+    return rt;
 }

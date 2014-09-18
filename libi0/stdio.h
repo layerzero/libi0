@@ -2,6 +2,7 @@
 #define I0STDIO_H
 
 #include "stddef.h"
+#include "stdlib.h"
 #include "math.h"
 
 #define _DEBUG_I0STDIO_no

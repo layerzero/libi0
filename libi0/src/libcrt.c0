@@ -1,4 +1,3 @@
-#include "fastexp.c"
 #include "malloc.c"
 #include "math.c"
 #include "pc.c"
