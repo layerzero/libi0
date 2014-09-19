@@ -103,7 +103,7 @@ long systemEx(char *command, option_block_t option)
     // issue system call
     asm("int 0x80");
 
-    rt = *(long*) (SYSCALL_COMM_AREA_ADDR);
+    rt = *(long*)(SYSCALL_COMM_AREA_ADDR);
 
     return rt;
 }
