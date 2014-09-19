@@ -105,7 +105,7 @@ long systemEx(char *command, option_block_t option)
 
     rt = *(long*) (SYSCALL_COMM_AREA_ADDR);
 
-    return 0;
+    return rt;
 }
 
 long system(char *command)
