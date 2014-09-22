@@ -46,3 +46,14 @@ double sqrt(double x)
     }
     return n;
 }
+
+long remainder(long dividend, long divisor) {
+	long res;
+	res = dividend/divisor;
+	res = dividend - res*divisor;
+	if(res < 0) {
+		res = res + divisor;
+	}
+	return res;
+}
+
