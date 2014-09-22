@@ -85,3 +85,32 @@ str_to_long_exit:
     *result = n;
     return ret;
 }
+
+long systemEx(char *command, option_block_t option)
+{
+    long rt;
+
+    // set system call id
+    *(SYSCALL_ID_TYPE*) SYSCALL_ID_ADDR = (SYSCALL_ID_TYPE) SYSCALL_ID_SYSTEMEX;
+
+    // set system call input arguments
+    // TODO: get the strlen
+    // rt = strlen(command);
+    rt = 0;
+    *(int64_t*) SYSCALL_COMM_AREA_ADDR = rt;
+    *(int64_t*)(SYSCALL_COMM_AREA_ADDR + sizeof_int64_t) = (int64_t)command;
+
+    // issue system call
+    asm("int 0x80");
+
+    rt = *(long*)(SYSCALL_COMM_AREA_ADDR);
+
+    return rt;
+}
+
+long system(char *command)
+{
+    long rt;
+    rt = systemEx(command, NULL);
+    return rt;
+}

@@ -188,6 +188,9 @@ register long reg4;
 #define SYSCALL_ID_SWRITE  (4)
 #define SYSCALL_ID_SLISTEN (5)
 
+// systemEx
+#define SYSCALL_ID_SYSTEMEX (12)
+
 // Note: should be consistent with the configurations in L0
 // spaces
 #define L0_SPACE0           (0x000000000000)
