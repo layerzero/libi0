@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+# A script to expand #PRINTSTR macro in C0 program.
+# This script expand #PRINTSTR to calls to `put1()`s and
+# print the processed source code to STDOUT
+
+# example.c
+# #include "stdio.h"
+#
+# void main()
+# {
+#     PRINTLN("hello world!")
+#     commit;
+# }
+
+# after processing by ./strsplitter example.c:
+# #include "stdio.h"
+#
+# void main()
+# {
+# put1('h');put1('e');put1('l');put1('l');put1('o');put1(' ');put1('w');put1('o');put1('r');put1('l');put1('d');put1('!');wrln();
+#     commit;
+# }
+
+BEGIN { $/ = undef; }
+while(<>) {
+	my @matches = split(/PRINTLN\("([^"\\]*(\\.[^"\\]*)*)"\)/, $_);
+	for(my $i=0 ; $i <= $#matches ; $i++) {
+		if(($i%3) == 0) { print $matches[$i]; }
+		if(($i%3) == 1) {
+			my @string = split //, $matches[$i];
+			for(my $j = 0; $j <= $#string ; $j++)  {
+				if($string[$j] eq '\\') { print "put1('\\".$string[$j+1]."');";}
+				else { print "put1('$string[$j]');";}
+			}
+			print "wrln();";
+		}
+	}
+}
+
