@@ -29,7 +29,12 @@ while(<>) {
 		if(($i%3) == 1) {
 			my @string = split //, $matches[$i];
 			for(my $j = 0; $j <= $#string ; $j++)  {
-				if($string[$j] eq '\\') { print "put1('\\".$string[$j+1]."');";}
+				if($string[$j] eq '\\') { 
+					if($string[$j+1] ne '"') {
+						print "put1('\\".$string[$j+1]."');";
+						$j = $j + 1;
+					}
+				}
 				else { print "put1('$string[$j]');";}
 			}
 			print "wrln();";
