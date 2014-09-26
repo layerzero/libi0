@@ -2,5 +2,4 @@
 
 #this is a proxy for strsplitter (retrocompatibility)
 
-./strsplitter "$@"
-
+$(dirname $0)/strsplitter "$@"
