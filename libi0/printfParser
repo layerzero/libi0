@@ -1,0 +1,59 @@
+#!/usr/bin/perl
+
+sub printChar{
+	print "put1('".$_[0]."');";
+}
+
+BEGIN { $/ = undef; }
+while(<>) {
+	my @matches = split(/PRINTF\("([^"\\]*(\\.[^"\\]*)*)"(.*)\);/, $_);
+	for(my $i=0 ; $i <= $#matches ; $i = $i + 4) {
+		print $matches[$i];
+		if(defined($matches[$i + 1]) and defined($matches[$i + 3])) {
+			my $format = $matches[$i + 1];
+			my @arguments = split(/,/, $matches[$i + 3]);
+			my @mapped = map {$_ =~ s/^\s+|\s+$//g; $_} @arguments;
+			my @argumentList = grep {$_ ne ''}  @mapped;
+			my @formatArray = split(//, $format);
+			my $currentArg = 0;
+			for(my $pos = 0; $pos <= $#formatArray ; $pos++) {
+				my $currentChar = $formatArray[$pos];
+				my $nextChar = $formatArray[$pos + 1];
+				if($currentChar eq '%' and ($pos == 0 or $nextChar ne '\\') and $currentArg <= $#argumentList) {
+					if($nextChar eq 'i' or $nextChar eq 'd') {
+						print "output_q(".$argumentList[$currentArg].");";
+						$currentArg++;
+					}
+					elsif($nextChar eq 'x' or $nextChar eq 'X') {
+						print "output_q_hex(".$argumentList[$currentArg].");";
+						$currentArg++;
+					}
+					elsif($nextChar eq 's') {
+						print "output_str(".$argumentList[$currentArg].");";
+						$currentArg++;
+					}
+					elsif($nextChar eq 'f' or $nextChar eq 'F') {
+						print "output_double(".$argumentList[$currentArg].");";
+						$currentArg++;
+					}
+					else {
+						printChar($currentChar);
+						printChar($nextChar);
+					}
+					$pos++;
+				}
+				else {
+					if($currentChar eq '\\') { 
+						if($nextChar ne '"') {
+							printChar("\\".$nextChar);
+							$pos++;
+						}
+					}
+					else { printChar($currentChar);}
+				}
+			}
+			print "\n";
+		}
+	}
+}
+
