@@ -2,6 +2,7 @@
 # A script to expand #PRINTSTR macro in C0 program.
 # This script expand #PRINTSTR to calls to `put1()`s and
 # print the processed source code to STDOUT
+# You can use PRINTSTR or PRINTLN (PRINTLN jump a line at the end)
 
 # example.c
 # #include "stdio.h"
@@ -21,12 +22,15 @@
 #     commit;
 # }
 
+
+use warnings;
+
 BEGIN { $/ = undef; }
 while(<>) {
-	my @matches = split(/PRINTLN\("([^"\\]*(\\.[^"\\]*)*)"\)/, $_);
+	my @matches = split(/(PRINTSTR|PRINTLN)\("([^"\\]*(\\.[^"\\]*)*)"\)/, $_);
 	for(my $i=0 ; $i <= $#matches ; $i++) {
-		if(($i%3) == 0) { print $matches[$i]; }
-		if(($i%3) == 1) {
+		if(($i%4) == 0) { print $matches[$i]; }
+		if(($i%4) == 2) {
 			my @string = split //, $matches[$i];
 			for(my $j = 0; $j <= $#string ; $j++)  {
 				if($string[$j] eq '\\') { 
@@ -37,7 +41,9 @@ while(<>) {
 				}
 				else { print "put1('$string[$j]');";}
 			}
-			print "wrln();";
+			if($matches[$i-1] eq "PRINTLN") {
+				print "wrln();";
+			}
 		}
 	}
 }
