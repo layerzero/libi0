@@ -11,7 +11,7 @@
 //remove following comment to get some debug output.
 // #define _DEBUG_MLC_
 
-//flag that whether shalloc area has been used. 
+//flag that whether shalloc area has been used.
 //It is in auto init area. Its init value is 0.
 #define PR_IS_USED (0x200100000)
 
@@ -73,7 +73,7 @@ void init_PR_var();
 //Shalloc Area Range = SAR
 /*struct Shalloc_Area_Range {
     char *BASE;
-    char *END; //first addr that out of the area range 
+    char *END; //first addr that out of the area range
     char *LTP; //local top pointer
 };*/
 
@@ -106,14 +106,14 @@ void *_get_new_pa(long size);
 
 void *pralloc(long size);
 
-// allocate memory ranges according the the option
-// on success, return the allocated address
-// on fail, return NULL
-addr_t shalloc_ext(size_t size, shalloc_option_t option);
-
-// addr is the addr_t returned by shalloc_ext
-// nth is the nth range in the replication group.
-// addr is the 0th replica
-addr_t shalloced_replicas(addr_t addr, size_t nth);
+// // allocate memory ranges according the the option
+// // on success, return the allocated address
+// // on fail, return NULL
+// addr_t shalloc_ext(size_t size, shalloc_option_t option);
+//
+// // addr is the addr_t returned by shalloc_ext
+// // nth is the nth range in the replication group.
+// // addr is the 0th replica
+// addr_t shalloced_replicas(addr_t addr, size_t nth);
 
 #endif //I0MALLOC_H
