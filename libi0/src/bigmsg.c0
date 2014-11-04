@@ -1,4 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <malloc.h>
 
 #include "bigmsg.h"
+
+option_block_t msg_option_to_option_(msg_option_t option)
+{
+    return option;
+}
+
+long systemMsg(char *command, msg_option_t option)
+{
+    long rt;
+    option_block_t opt = msg_option_to_option(option);
+    rt = systemEx(command, opt);
+    return rt;
+}
+
+msg_option_t create_single_msg_option(char *addr, uint64_t len)
+{
+    /* msg_option_block:
+       struct {
+       long cnt;
+       struct{long addr, long len} fields[2*cnt];
+       }
+    */
+
+    long *block;
+
+    block = (long*)pralloc(sizeof_int64_t * 3);
+
+    *block = 1;
+
+    *(long*)((uint64_t)block + sizeof_int64_t) = (long)addr;
+    *(long*)((uint64_t)block + 2 * sizeof_int64_t) = (long)len;
+
+    return (msg_option_t)block;
+}
