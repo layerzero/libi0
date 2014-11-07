@@ -99,6 +99,7 @@ long systemEx(char *command, option_block_t option)
     rt = 0;
     *(int64_t*) SYSCALL_COMM_AREA_ADDR = rt;
     *(int64_t*)(SYSCALL_COMM_AREA_ADDR + sizeof_int64_t) = (int64_t)command;
+    *(int64_t*)(SYSCALL_COMM_AREA_ADDR + 2 * sizeof_int64_t) = (int64_t)&option;
 
     // issue system call
     asm("int 0x80");
