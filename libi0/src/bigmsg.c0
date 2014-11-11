@@ -4,7 +4,7 @@
 
 #include "bigmsg.h"
 
-option_block_t msg_option_to_option_(msg_option_t option)
+option_block_t msg_option_to_option(msg_option_t option)
 {
     return option;
 }
@@ -12,7 +12,8 @@ option_block_t msg_option_to_option_(msg_option_t option)
 long systemMsg(char *command, msg_option_t option)
 {
     long rt;
-    option_block_t opt = msg_option_to_option(option);
+    option_block_t opt;
+    opt = msg_option_to_option(option);
     rt = systemEx(command, opt);
     return rt;
 }
