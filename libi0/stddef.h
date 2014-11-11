@@ -73,10 +73,6 @@ register long reg4;
 
 #ifdef PPM_12TB
 
-// // planetary memory range (12TB)
-// #define PPM_START  0x40000000000
-// #define PPM_SIZE   0xc0000000000
-// #define PPM_END    0xfffffffffff
 
 
 // planetary memory range (12TB)
@@ -84,7 +80,6 @@ register long reg4;
 #define PPM_SIZE   0xc0000000000
 #define PPM_END    0xfffffffffff
 
-#define PPM_START  PPM_BEGIN
 
 // further partitioning the PPM (persistent memory)
 
@@ -95,34 +90,49 @@ register long reg4;
 // normal SR begin and end
 #define SR_N_BEGIN (SR_BEGIN)
 #define SR_N_END (SR_BEGIN + SR_N_SIZE - 1)
-// SR_N_END: currently 0x400000000 + 0x20000000000 -1  = 0x20400000000 -1 (around 2.2TB)
 
 // normal AMR (in physical memory) size
+// 2TB
 #define AMR_N_OFFSET_SIZE 0x20000000000
-// AMR_N_OFFSET_SIZE: currently 2TB
 
 #define AMR_N_OFFSET_BEGIN (SR_N_END + 1)
-// AMR_N_OFFSET_BEGIN: currently 0x20400000000 (around 2.2TB)
-
 #define AMR_N_OFFSET_END (AMR_N_OFFSET_BEGIN + AMR_N_OFFSET_SIZE - 1)
 
 // persistent AMR size
 // 6TB
 #define AMR_P_OFFSET_SIZE 0x60000000000
 
+// replicated AMR_P; it is close to the PMEM_N
+#define AMR_P_REP_OFFSET_SIZE 0x40000000000
+
+// replicated PMEM_N; it is close to the AMR_P
+#define PMEM_N_REP_SIZE       0x60000000000
+
+// replicated pages' range size
+#define PMEM_REP_SIZE (AMR_P_REP_OFFSET_SIZE + PMEM_N_REP_SIZE)
 
 #define AMR_P_OFFSET_BEGIN (AMR_N_OFFSET_END + 1)
 #define AMR_P_OFFSET_END (AMR_P_OFFSET_BEGIN + AMR_P_OFFSET_SIZE - 1)
 
+#define AMR_P_REP_OFFSET_END (AMR_P_OFFSET_END)
+#define AMR_P_REP_OFFSET_BEGIN (AMR_P_REP_OFFSET_END + 1 - AMR_P_REP_OFFSET_SIZE)
+
+// replicated pages' range
+#define PMEM_REP_BEGIN AMR_P_REP_OFFSET_BEGIN
+#define PMEM_REP_END (PMEM_REP_BEGIN + PMEM_REP_SIZE - 1)
 
 // normal (not in AMR) persistent memory size
 // 6TB
 #define PMEM_N_SIZE       0x60000000000
 
-
 #define PMEM_N_BEGIN (AMR_P_OFFSET_END + 1)
 #define PMEM_N_END (PMEM_N_BEGIN + PMEM_N_SIZE - 1)
 
+#define PMEM_N_REP_BEGIN (PMEM_N_BEGIN)
+#define PMEM_N_REP_END (PMEM_N_REP_BEGIN + PMEM_N_REP_SIZE - 1)
+
+// non-replicated pmem
+#define PMEM_N_NONREP_BEGIN (PMEM_N_REP_END + 1)
 
 // Note: in total persistent memory size is PPM_SIZE
 
@@ -138,12 +148,11 @@ register long reg4;
 #define AMR_OFFSET_END   AMR_P_OFFSET_END
 
 
-
 // replication factor
-#define MM_REPLICATION_FACTOR 3
+#define PAGE_REP_FACTOR 3
 
-
-
+// number of replication regions
+#define N_REP_REGION 3
 
 
 // idle handler heap
