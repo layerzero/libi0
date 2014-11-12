@@ -19,8 +19,8 @@ void store_int16(void *addr, long n)
 #ifdef DEBUG_STDINT
     putlong((long)hi);putchar('|');putlong((long)low);wrln();
 #endif
-    *(char*)addr = hi;
-    *(char*)((long)addr + 1) = low;
+    *(char*)addr = low;
+    *(char*)((long)addr + 1) = hi;
     return;
 }
 
@@ -32,7 +32,7 @@ long load_int16(void *addr)
     low = (long)*(char*)((long)addr+1);
     hi = hi & 0xFF;
     low = low & 0xFF;
-    hi = hi * 0x100;
+    low = low * 0x100;
     hi = hi | low;
     return hi;
 }
