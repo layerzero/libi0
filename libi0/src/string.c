@@ -210,3 +210,39 @@ void memset0(char* m, long len)
     }
     return;
 }
+
+long grep(char* s1, long n1, char* s2, long n2)
+{
+    long ret_value;
+    long local_reg;
+
+    long sr1;
+    long sr2;
+    long sr3;
+    long sr4;
+
+    // save registers
+    sr1 = reg1;
+    sr2 = reg2;
+    sr3 = reg3;
+    sr4 = reg4;
+    local_reg = *(long*)SYSCALL_COMM_AREA_ADDR;
+
+    reg1 = (long)s1;
+    reg2 = (long)s2;
+    reg3 = n1;
+    *(long*)SYSCALL_COMM_AREA_ADDR = n2;
+
+    asm("grep reg1, reg3, reg2, 0x100001000, reg4");
+
+    ret_value = reg4;
+
+    // restore registers
+    reg1 = sr1;
+    reg2 = sr2;
+    reg3 = sr3;
+    reg4 = sr4;
+    *(long*)SYSCALL_COMM_AREA_ADDR = local_reg;
+
+    return ret_value;
+}

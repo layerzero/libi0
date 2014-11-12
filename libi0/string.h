@@ -13,7 +13,7 @@ void memcpy(char* src, long len, char* dst);
 // for internal implementation only for memcmp_se
 long __memcmp_se(char* s1, char* s2, long n);
 
-// To use this function, the program should define 
+// To use this function, the program should define
 // ENABLE_MEMCMP_SE
 // before #include "libi0/string.h"; otherwise, the compilation fails.
 // memcmp with side effect: registers are changed
@@ -27,5 +27,7 @@ long __memcmp_se(char* s1, char* s2, long n);
 long memcmp(char* s1, char* s2, long n);
 
 void memset0(char* m, long len);
+
+long grep(char* s1, long n1, char* s2, long n2);
 
 #endif // I0STRING_H
