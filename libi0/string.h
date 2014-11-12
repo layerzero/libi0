@@ -28,6 +28,9 @@ long memcmp(char* s1, char* s2, long n);
 
 void memset0(char* m, long len);
 
-long grep(char* s1, long n1, char* s2, long n2);
+// grep needle of nlen from s of slen
+// If needle is found in s, return the position of the 1st needle found
+// If needle is not found in s, return -1
+long grep(char* s, long slen, char* needle, long nlen);
 
 #endif // I0STRING_H
