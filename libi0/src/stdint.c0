@@ -28,11 +28,11 @@ void store_int16(void *addr, long n)
 long load_int16(void *addr)
 {
     long hi, low;
-    hi = (long)*(char*)addr;
-    low = (long)*(char*)((long)addr+1);
-    hi = hi & 0xFF;
+    low = (long)*(char*)addr;
+    hi = (long)*(char*)((long)addr+1);
     low = low & 0xFF;
-    low = low * 0x100;
+    hi = hi & 0xFF;
+    hi = hi * 0x100;
     hi = hi | low;
     return hi;
 }
