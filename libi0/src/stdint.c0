@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define DEBUG_STDINT
+#define noDEBUG_STDINT
 
 #ifdef DEBUG_STDINT
 #include <stdio.h>
@@ -30,8 +30,9 @@ long load_int16(void *addr)
     long hi, low;
     hi = (long)*(char*)addr;
     low = (long)*(char*)((long)addr+1);
+    hi = hi & 0xFF;
+    low = low & 0xFF;
     hi = hi * 0x100;
     hi = hi | low;
-    hi = hi & 0xFFFF;
     return hi;
 }
