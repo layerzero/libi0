@@ -9,3 +9,5 @@
 #include "time.c"
 #include "unistd.c"
 #include "bigmsg.c0"
+#include "stdint.c0"
+#include "random.c"

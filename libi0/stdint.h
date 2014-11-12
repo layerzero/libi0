@@ -12,4 +12,10 @@
 
 #define sizeof_char 1
 
+// store a 2-byte into addr
+void store_int16(void *addr, long n);
+
+// load a 2-byte into addr
+long load_int16(void *addr);
+
 #endif // STDINT
