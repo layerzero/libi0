@@ -106,7 +106,7 @@ register long reg4;
 #define AMR_P_REP_OFFSET_SIZE 0x40000000000
 
 // replicated PMEM_N; it is close to the AMR_P
-#define PMEM_N_REP_SIZE       0x60000000000
+#define PMEM_N_REP_SIZE       0x40000000000
 
 // replicated pages' range size
 #define PMEM_REP_SIZE (AMR_P_REP_OFFSET_SIZE + PMEM_N_REP_SIZE)
