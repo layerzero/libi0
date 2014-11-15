@@ -75,7 +75,7 @@ register long reg4;
 
 
 
-// planetary memory range (12TB)
+// Obsoleted: planetary memory range (12TB)
 #define PPM_BEGIN  0x40000000000
 #define PPM_SIZE   0xc0000000000
 #define PPM_END    0xfffffffffff
@@ -161,7 +161,7 @@ register long reg4;
 
 #else // default 8TB
 
-// planetary memory range (8TB)
+// Obsoleted: planetary memory range (8TB)
 #define PPM_START  0x80000000000
 #define PPM_SIZE   0x80000000000
 #define PPM_END    0xfffffffffff
@@ -200,25 +200,31 @@ register long reg4;
 // systemEx
 #define SYSCALL_ID_SYSTEMEX (12)
 
-// Note: should be consistent with the configurations in L0
-// spaces
-#define L0_SPACE0           (0x000000000000)
-#define L0_SPACE1           (0x400000000000)
-#define L0_SPACE2           (0x800000000000)
-#define L0_SPACE3           (0xC00000000000)
-#define L0_SPACE4          (0x1000000000000)
-#define L0_SPACE5          (0x1400000000000)
-#define L0_SPACE6          (0x1800000000000)
-#define L0_SPACE7          (0x1C00000000000)
-#define L0_SPACE8          (0x2000000000000)
-#define L0_SPACE9          (0x2400000000000)
-#define L0_SPACE10         (0x2800000000000)
-#define L0_SPACE11         (0x2C00000000000)
-#define L0_SPACE12         (0x3000000000000)
+// space related
+// suggested space specifier format
+#define SPACE(I)       SPACE_START(I)
 
-#define L0_SPACE_INC        (0x400000000000)
+#define SPACE_START(I) (SPACE_INC*(I))
 
-#define SPACE_START(I) (0x400000000000*(I))
+#define SPACE_INC        (0x400000000000)
+
+// obsoleted space specifiers
+#define L0_SPACE0         SPACE(0)
+#define L0_SPACE1         SPACE(1)
+#define L0_SPACE2         SPACE(2)
+#define L0_SPACE3         SPACE(3)
+#define L0_SPACE4         SPACE(4)
+#define L0_SPACE5         SPACE(5)
+#define L0_SPACE6         SPACE(6)
+#define L0_SPACE7         SPACE(7)
+#define L0_SPACE8         SPACE(8)
+#define L0_SPACE9         SPACE(9)
+#define L0_SPACE10        SPACE(10)
+#define L0_SPACE11        SPACE(11)
+#define L0_SPACE12        SPACE(12)
+
+#define L0_SPACE_INC        SPACE_INC
+
 
 // exit code
 #define NEW_RUNNER_ID_ADDR (0x100000410)
