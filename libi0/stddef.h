@@ -197,8 +197,8 @@ register long reg4;
 
 
 // deprecated macros
-#define PPM_BEGIN  (PMEM_N_NONREP_BEGIN)
-#define PPM_SIZE   (PMEM_N_NONREP_SIZE)
+#define PPM_BEGIN  (AMR_P_OFFSET_BEGIN)
+#define PPM_SIZE   (PPM_END - PPM_BEGIN)
 #define PPM_END    (PMEM_N_NONREP_END)
 #define PPM_START  (PPM_BEGIN)
 
