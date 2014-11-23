@@ -75,12 +75,6 @@ register long reg4;
 
 
 
-// Obsoleted: planetary memory range (12TB)
-#define PPM_BEGIN  0x40000000000
-#define PPM_SIZE   0xc0000000000
-#define PPM_END    0xfffffffffff
-
-
 // further partitioning the PPM (persistent memory)
 
 // normal SR (in physical memory) size
@@ -133,6 +127,8 @@ register long reg4;
 
 // non-replicated pmem
 #define PMEM_N_NONREP_BEGIN (PMEM_N_REP_END + 1)
+#define PMEM_N_NONREP_END (PMEM_N_END)
+#define PMEM_N_NONREP_SIZE (PMEM_N_NONREP_END - PMEM_N_NONREP_BEGIN + 1)
 
 // Note: in total persistent memory size is PPM_SIZE
 
@@ -142,7 +138,6 @@ register long reg4;
 // Option 1: all the SR except PPM
 // #define AMR_OFFSET_BEGIN SR_BEGIN
 #define AMR_OFFSET_BEGIN AMR_N_OFFSET_BEGIN
-// #define AMR_OFFSET_END   PPM_BEGIN
 // for KV+
 // #define AMR_OFFSET_END   0x54000000000
 #define AMR_OFFSET_END   AMR_P_OFFSET_END
@@ -160,11 +155,6 @@ register long reg4;
 #define IDLE_HANDLE_RUNNER_HEAP_LEN   (0x1000)
 
 #else // default 8TB
-
-// Obsoleted: planetary memory range (8TB)
-#define PPM_START  0x80000000000
-#define PPM_SIZE   0x80000000000
-#define PPM_END    0xfffffffffff
 
 // idle handler heap
 #define IDLE_HANDLE_RUNNER_HEAP_BEGIN (0x7f800000000)
@@ -207,6 +197,13 @@ register long reg4;
 #define SPACE_START(I) (SPACE_INC*(I))
 
 #define SPACE_INC        (0x400000000000)
+
+
+// deprecated macros
+#define PPM_BEGIN  (PMEM_N_NONREP_BEGIN)
+#define PPM_SIZE   (PMEM_N_NONREP_SIZE)
+#define PPM_END    (PMEM_N_NONREP_END)
+#define PPM_START  (PPM_BEGIN)
 
 // obsoleted space specifiers
 #define L0_SPACE0         SPACE(0)
