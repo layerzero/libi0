@@ -1,6 +1,6 @@
 
-#ifndef I0STDDEF_H
-#define I0STDDEF_H
+#ifndef STDDEF_H
+#define STDDEF_H
 
 #include "stdint.h"
 
@@ -53,10 +53,18 @@ register long reg4;
 #define PHASING_CACHE_ADDR (0x200200000L)
 #define PHASING_CACHE_LEN   (0xc0000000L)
 
-
+/* Application can specify the PPM size by defining
+   PLS_PPM_SIZE (PLS means "please") and the corresponding
+   PPM macro. The following code is an example.
+     #define PLS_PPM_SIZE
+     #define PPM_8TB
+   If the application does not define PLS_PPM_SIZE, we
+   use a default value of 12TB.
+*/
+#ifndef PLS_PPM_SIZE
 // otherwise 8TB
 #define PPM_12TB 1
-
+#endif
 
 // STDIN
 #define STDIN     (0x100000200)
@@ -72,8 +80,6 @@ register long reg4;
 
 
 #ifdef PPM_12TB
-
-
 
 // Obsoleted: planetary memory range (12TB)
 #define PPM_BEGIN  0x40000000000
@@ -170,6 +176,77 @@ register long reg4;
 #define IDLE_HANDLE_RUNNER_HEAP_BEGIN (0x7f800000000)
 #define IDLE_HANDLE_RUNNER_HEAP_LEN (0x1000)
 
+// 20141123/gl: I am copying some 12TB defs here except for what is defined and the replication stuff.
+// Obsoleted: planetary memory range (12TB)
+#define PPM_BEGIN  0x40000000000
+
+
+// further partitioning the PPM (persistent memory)
+
+// normal SR (in physical memory) size
+// 2TB
+#define SR_N_SIZE  0x20000000000
+
+// normal SR begin and end
+#define SR_N_BEGIN (SR_BEGIN)
+#define SR_N_END (SR_BEGIN + SR_N_SIZE - 1)
+
+// normal AMR (in physical memory) size
+// 2TB
+#define AMR_N_OFFSET_SIZE 0x20000000000
+
+#define AMR_N_OFFSET_BEGIN (SR_N_END + 1)
+#define AMR_N_OFFSET_END (AMR_N_OFFSET_BEGIN + AMR_N_OFFSET_SIZE - 1)
+
+// persistent AMR size
+// 6TB
+#define AMR_P_OFFSET_SIZE 0x60000000000
+
+// replicated AMR_P; it is close to the PMEM_N
+#define AMR_P_REP_OFFSET_SIZE 0x40000000000
+
+// replicated PMEM_N; it is close to the AMR_P
+#define PMEM_N_REP_SIZE       0x40000000000
+
+// replicated pages' range size
+#define PMEM_REP_SIZE (AMR_P_REP_OFFSET_SIZE + PMEM_N_REP_SIZE)
+
+#define AMR_P_OFFSET_BEGIN (AMR_N_OFFSET_END + 1)
+#define AMR_P_OFFSET_END (AMR_P_OFFSET_BEGIN + AMR_P_OFFSET_SIZE - 1)
+
+#define AMR_P_REP_OFFSET_END (AMR_P_OFFSET_END)
+#define AMR_P_REP_OFFSET_BEGIN (AMR_P_REP_OFFSET_END + 1 - AMR_P_REP_OFFSET_SIZE)
+
+// replicated pages' range
+#define PMEM_REP_BEGIN AMR_P_REP_OFFSET_BEGIN
+#define PMEM_REP_END (PMEM_REP_BEGIN + PMEM_REP_SIZE - 1)
+
+// normal (not in AMR) persistent memory size
+// 6TB
+#define PMEM_N_SIZE       0x60000000000
+
+#define PMEM_N_BEGIN (AMR_P_OFFSET_END + 1)
+#define PMEM_N_END (PMEM_N_BEGIN + PMEM_N_SIZE - 1)
+
+#define PMEM_N_REP_BEGIN (PMEM_N_BEGIN)
+#define PMEM_N_REP_END (PMEM_N_REP_BEGIN + PMEM_N_REP_SIZE - 1)
+
+// non-replicated pmem
+#define PMEM_N_NONREP_BEGIN (PMEM_N_REP_END + 1)
+
+// Note: in total persistent memory size is PPM_SIZE
+
+// Note: libi0 and KV+ need to be changed accordingly
+
+// AMR ranges
+// Option 1: all the SR except PPM
+// #define AMR_OFFSET_BEGIN SR_BEGIN
+#define AMR_OFFSET_BEGIN AMR_N_OFFSET_BEGIN
+// #define AMR_OFFSET_END   PPM_BEGIN
+// for KV+
+// #define AMR_OFFSET_END   0x54000000000
+#define AMR_OFFSET_END   AMR_P_OFFSET_END
+
 #endif
 
 // system call
@@ -243,4 +320,4 @@ long get_new_task_id();
 // len in bytes
 void task_id_to_ec_range(long id, long *base, long *len);
 
-#endif // I0STDDEF_H
+#endif // STDDEF_H
