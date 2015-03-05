@@ -15,6 +15,9 @@
 // print a char to STDOUT
 void output_char(long c);
 
+// print a char to STDOUT
+void output_readable_char(long c);
+
 #define putchar(c) output_char(c)
 #define putdouble(a) output_double(a)
 #define putlong(a) output_long(a)
@@ -54,6 +57,8 @@ void output_id();
 
 // print @sl charactores in @s to STDOUT
 void output_char_str(char* s, long sl);
+
+void output_readable_char_str(char* s, long sl);
 
 // print string @s to STDOUT
 void output_str(char* s);

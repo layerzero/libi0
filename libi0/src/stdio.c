@@ -7,6 +7,27 @@ void output_char(long c)
     return;
 }
 
+void output_readable_char(long c)
+{
+    if (c > 32) {
+        // 32 space is the smallest printable char
+
+        // double '\\' for '\'
+        if (c == (long)'\\') {
+            output_char('\\');
+        }
+        output_char(c);
+    } else {
+        // single '\' + 2 digit int for non-printable char
+        output_char((long)'\\');
+        if (c < 10) {
+            output_char((long)'0');
+        }
+        output_q(c);
+    }
+    return;
+}
+
 // print a 64bit integer to STDOUT
 void output_q(long n)
 {
@@ -180,6 +201,19 @@ void output_char_str(char* s, long sl)
 
     return;
 }
+
+void output_readable_char_str(char* s, long sl)
+{
+    long n;
+    n = 0;
+    while (n < sl) {
+        output_readable_char((long)s[n]);
+        n = n + 1;
+    }
+
+    return;
+}
+
 
 // print string @s to STDOUT
 void output_str(char* s)
