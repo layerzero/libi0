@@ -89,10 +89,20 @@ long input_line(char *buf, long maxlen, long *len);
 // Note: will also read in an extra char
 // return immediately after reading '\0'
 // do not recognize +
-// result is in *pq
+// result is in *result
 // return 0 on success
 // -1 on end of file
 long input_long(long *result);
+
+// input a long from STDIN
+// Note: will also read in an extra char
+// return immediately after reading '\0'
+// do not recognize +
+// result in *result
+// return 0 on success
+// -1 on end of file
+// only accept lower 0xabcdef89 and like
+long input_long_hex(long *result);
 
 #define IEEE754_SIGN   0x8000000000000000
 #define IEEE754_EXP    0x7FF0000000000000

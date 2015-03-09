@@ -352,7 +352,6 @@ input_line_exit:
 // Note: will also read in an extra char
 // return immediately after reading '\0'
 // do not recognize +
-// result is in *pq
 // return 0 on success
 // -1 on end of file
 long input_long(long *result)
@@ -412,6 +411,77 @@ input_long_exit:
     *result = n;
     return ret;
 }
+
+// input a long from STDIN
+// Note: will also read in an extra char
+// return immediately after reading '\0'
+// do not recognize +
+// result in *result
+// return 0 on success
+// -1 on end of file
+// only accept lower 0xabcdef89 and like
+long input_long_hex(long *result)
+{
+    long c;
+    long is_checking;
+    long n;
+    long ret;
+
+    n = 0;
+    is_checking = 1;
+    ret = -1;
+
+    // try to get 0x
+    do {
+        c = __input_char();
+        if (c == EOF) goto input_long_hex_exit;
+        if (c == (long)'0') {
+            // if '0' found, 'x' must follow
+            c = __input_char();
+            if (c == (long)'x') {
+                is_checking = 0;
+            } else {
+                goto input_long_hex_exit;
+            }
+        }
+    } while (is_checking == 1);
+
+    ret = 0;
+    is_checking = 1;
+    n = 0;
+    c = 0;
+    do {
+        n = n * 16 + c;
+        // read next char
+        c = __input_char();
+        if (c == EOF) goto input_long_hex_exit;
+        // 0..9 a..f
+        if (c < (long)'0') {
+            is_checking = 0;
+        } else if (c > (long)'f') {
+            is_checking = 0;
+        } else if (c > (long)'9') {
+            if (c < (long)'a') {
+                is_checking = 0;
+            }
+        }
+
+        if (is_checking == 1) {
+            if (c > (long)'9') {
+                c = c - ((long)'a') + 10;
+            } else {
+                c = c - ((long)'0');
+            }
+        }
+
+    } while (is_checking == 1);
+
+input_long_hex_exit:
+
+    *result = n;
+    return ret;
+}
+
 
 // N x 2 ^ M
 void output_double_binary(double d)

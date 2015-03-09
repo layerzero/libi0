@@ -1,6 +1,5 @@
 #include "stdlib.h"
 
-// input a long from STDIN
 // Note: will also read in an extra char
 // return immediately after reading '\0'
 // do not recognize +
