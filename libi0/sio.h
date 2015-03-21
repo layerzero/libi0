@@ -30,4 +30,9 @@ size_t swrite(sid_t sid, char *addr, size_t nbyte);
 // On failure, return SID_INVALID
 sid_t slisten(size_t port);
 
+// close a a SIO socket sid
+// On success, return 0
+// On failure, return !0
+long sclose(sid_t sid);
+
 #endif // SIO_H

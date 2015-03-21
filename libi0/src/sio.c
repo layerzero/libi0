@@ -151,3 +151,36 @@ sid_t slisten(size_t port)
 
     return sid;
 }
+
+long sclose(sid_t sid)
+{
+    uint64_t n;
+
+    // set system call id
+    *(SYSCALL_ID_TYPE*) SYSCALL_ID_ADDR = (SYSCALL_ID_TYPE) SYSCALL_ID_SCLOSE;
+
+    // set system call input arguments
+    *(sid_t*) SYSCALL_COMM_AREA_ADDR = sid;
+
+    // issue system call
+    asm("int 0x80");
+
+    // set return value
+    n = *(long*) (SYSCALL_COMM_AREA_ADDR);
+
+#ifdef _SIO_DEBUG_
+    output_char('s');
+    output_char('i');
+    output_char('o');
+    output_char(':');
+    output_char('s');
+    output_char('c');
+    output_char(':');
+    output_char(' ');
+    output_q(n);
+    output_char(C_n);
+#endif
+
+    return n;
+}
+

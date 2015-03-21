@@ -183,6 +183,7 @@ register long reg4;
 #define SYSCALL_ID_SREAD   (3)
 #define SYSCALL_ID_SWRITE  (4)
 #define SYSCALL_ID_SLISTEN (5)
+#define SYSCALL_ID_SCLOSE  (13)
 
 // systemEx
 #define SYSCALL_ID_SYSTEMEX (12)
