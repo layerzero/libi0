@@ -4,116 +4,64 @@
 #include "stddef.h"
 #include "stdio.h"
 
+//flag that whether shalloc area has been used.
+//It is in auto init area. Its init value is 0.
+#define _IS_USED (0x200100000)
+
+//---------------------Shalloc Defination----------------------------
 // whether the shalloc is made standalone
 // if defined, each shalloc'ed range will be standalone
 #define STANDALONE_SHALLOC
 
-//remove following comment to get some debug output.
-// #define _DEBUG_MLC_
-
-//flag that whether shalloc area has been used.
-//It is in auto init area. Its init value is 0.
-#define PR_IS_USED (0x200100000)
-
-//---------------------Shalloc Defination----------------------------
-//any requested size to scheduler should be aligned to 64M
-#define S_ALIGN_TO_SIZE (0x4000000)
-
-// 1 page
-#define S_ALIGN_TO_SIZE_EXT (4096)
+//any requested size to scheduler should be aligned to a large area, like 64M
+#define _S_ALIGN_TO_SIZE (0x4000000)
 
 //the base address of shalloc area range array
 //is a const value
-#define PR_SAR_ARRAY_BASE (0x300003008)
+#define _SAR_ARRAY_BASE (0x300003008)
 
 //the end address of shalloc area range array
 //is a const value
 //0x10000 elements in sar_array
-#define PR_SAR_ARRAY_END (0x300183008)
+#define _SAR_ARRAY_END (0x300183008)
 
 //the last element in shalloc area range array
 //is a variable
-#define PR_SAR_ARRAY_LAST_ELEMENT (0x300003000)
+#define _SAR_ARRAY_LAST_ELEMENT (0x300003000)
 
-//malloc system call id
-// defined in stddef.h
-// #define SYSCALL_ID_MALLOC (1)
+//shalloc options
+#define shalloc_option_t long
+#define sizeof_shalloc_option_t sizeof_long
+#define SR_N (0)
+#define AMR_N (1)
+#define AMR_P_NONREP (2)
+#define AMR_P_REP (3)
+#define PMEM_N_REP (4)
+#define PMEM_N_NONREP (5)
 //---------------------End of Shalloc Defination---------------------
 
 //---------------------Pralloc Defination----------------------------
-//any requested size should be aligned to page size, namely 4K bytes.
-#define P_ALIGN_TO_PAGE (0x1000)
+//any requested size can be aligned to a size, like 4K bytes (a page size).
+#define _P_ALIGN_TO_SIZE (0x1000)
 
-//the base address of shalloc area range array
+//the base address of pralloc area range array
 //is a const value
-#define PR_PA_BASE (0x3FFFF0000)
+#define _PA_BASE (0x3FFFF0000)
 
-//the end address of shalloc area range array
+//the end address of pralloc area range array
 //is a const value
 //0x10000 elements in sar_array
-#define PR_PA_END (0x300200000)
+#define _PA_END (0x300200000)
 
-//the last element in shalloc area range array
+//the last element in pralloc area range array
 //is a variable
-#define PR_PA_TP (0x3FFFFFFF8)
+#define _PA_TP (0x3FFFFFFF8)
 //---------------------End of Pralloc Defination---------------------
 
-
-#define shalloc_option_t  uint64_t
-#define sizeof_shalloc_option_t sizeof_uint64_t
-
-#define SHALLOC_1WAY 1
-#define SHALLOC_3WAY 3
-
-void _output_debug(long x);
-
-void init_PR_var();
-
-//---------------------Shalloc----------------------------
-//Shalloc Area Range = SAR
-/*struct Shalloc_Area_Range {
-    char *BASE;
-    char *END; //first addr that out of the area range
-    char *LTP; //local top pointer
-};*/
-
-char *_syscall_malloc_ext(long size, shalloc_option_t option);
-
-char *_syscall_malloc(long size);
-
-//align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
-long s_align_to(long size);
-
-long s_align_to_ext(long size);
-
-long s_align_to_page(long size);
-
-char *_get_new_sar(long size, long align_size);
-
-char *_get_new_sar_ext(long size, long align_size, shalloc_option_t option);
-
-//search in SAR_ARRAY
-char *_get_from_sar_array(long size);
+void *shalloc_ext(size_t size, shalloc_option_t option);
 
 void* shalloc(long size);
 
-//----------------------Pralloc-------------------------
-
-//align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
-long p_align_to(long size);
-
-void *_get_new_pa(long size);
-
 void *pralloc(long size);
-
-// // allocate memory ranges according the the option
-// // on success, return the allocated address
-// // on fail, return NULL
-// addr_t shalloc_ext(size_t size, shalloc_option_t option);
-//
-// // addr is the addr_t returned by shalloc_ext
-// // nth is the nth range in the replication group.
-// // addr is the 0th replica
-// addr_t shalloced_replicas(addr_t addr, size_t nth);
 
 #endif //I0MALLOC_H

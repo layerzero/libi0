@@ -1,5 +1,8 @@
 #include "malloc.h"
 
+//remove following comment to get some debug output.
+// #define _DEBUG_MLC_
+
 void _output_debug(long x)
 {
     long t;
@@ -31,11 +34,11 @@ void _output_debug(long x)
     return;
 }
 
-void init_PR_var()
+void _init()
 {
-    *(long*) PR_SAR_ARRAY_LAST_ELEMENT = (long) PR_SAR_ARRAY_BASE;
-    *(long*) PR_PA_TP = (long) PR_PA_BASE;
-    *(long*) PR_IS_USED = 1;
+    *(long*) _SAR_ARRAY_LAST_ELEMENT = (long) _SAR_ARRAY_BASE;
+    *(long*) _PA_TP = (long) _PA_BASE;
+    *(long*) _IS_USED = 1;
 
     return;
 }
@@ -44,35 +47,25 @@ void init_PR_var()
 //Shalloc Area Range = SAR
 /*struct Shalloc_Area_Range {
     char *BASE;
-    char *END; //first addr that out of the area range
-    char *LTP; //local top pointer
+    long SIZE; //the total size of this area range
+    char *LTP; //the local top pointer
+    long OPTION; //option type of this area range
 };*/
+#define SAR_BASE(x) (*(char **)x)
+#define SAR_SIZE(x) (*(long*)(x + sizeof_uint64_t))
+#define SAR_LTP(x) (*(char **)(x + sizeof_uint64_t + sizeof_long))
+#define SAR_OPTION(x) (*(shalloc_option_t*)(x + sizeof_uint64_t * 2 + sizeof_long))
+#define sizeof_SAR (sizeof_uint64_t * 2 + sizeof_long + sizeof_shalloc_option_t)
 
-char *_syscall_malloc_ext(long size, shalloc_option_t option)
+char *_syscall_malloc(size_t size, shalloc_option_t option)
 {
     //set system call id
     *(long*) SYSCALL_ID_ADDR = (long) SYSCALL_ID_MALLOC_EXT;
 
     //set system call input arguments
-    *(long*) SYSCALL_COMM_AREA_ADDR = size;
+    *(size_t*) SYSCALL_COMM_AREA_ADDR = size;
 
-    *(long*) ((long)SYSCALL_COMM_AREA_ADDR + sizeof_shalloc_option_t) = option;
-
-    //call soft interrupt of system call
-    asm("int 0x80");
-
-    //get output value of system call
-    return *(char **) SYSCALL_COMM_AREA_ADDR;
-}
-
-
-char *_syscall_malloc(long size)
-{
-    //set system call id
-    *(long*) SYSCALL_ID_ADDR = (long) SYSCALL_ID_MALLOC;
-
-    //set system call input arguments
-    *(long*) SYSCALL_COMM_AREA_ADDR = size;
+    *(shalloc_option_t*) (SYSCALL_COMM_AREA_ADDR + sizeof_size_t) = option;
 
     //call soft interrupt of system call
     asm("int 0x80");
@@ -82,61 +75,26 @@ char *_syscall_malloc(long size)
 }
 
 //align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
-long s_align_to(long size)
+size_t _s_align_to(size_t size)
 {
 #ifdef _DEBUG_MLC_
     _output_debug(size);
 #endif
-    return ((size - 1) / (S_ALIGN_TO_SIZE) + 1) * (S_ALIGN_TO_SIZE);
+    return ((size - 1) / (_S_ALIGN_TO_SIZE) + 1) * (_S_ALIGN_TO_SIZE);
 }
 
-long s_align_to_ext(long size)
-{
-#ifdef _DEBUG_MLC_
-    output_q_hex(size);
-    output_char(C_n);
-#endif
-    return ((size - 1) / (S_ALIGN_TO_SIZE_EXT) + 1) * (S_ALIGN_TO_SIZE_EXT);
-}
-
-long s_align_to_page(long size)
+size_t _align_to_page(size_t size)
 {
     return (size + PAGE_SIZE - 1) / (PAGE_SIZE) * (PAGE_SIZE);
 }
 
-char *_get_new_sar(long size, long align_size)
+char *_get_new_sar(size_t size, size_t align_size, shalloc_option_t option)
 {
     char *ret;
     long last_element;
 
     //call a system call to ask for new SAR
-    ret = _syscall_malloc(align_size);
-
-    //push back this new SAR as the last element of SAR_ARRAY
-    last_element = *(long*) PR_SAR_ARRAY_LAST_ELEMENT;
-
-    *(char **) last_element = ret;
-    *((char **) (last_element + 8)) = ret + align_size;
-    *((char **) (last_element + 16)) = ret + size;
-
-#ifdef _DEBUG_MLC_
-    _output_debug(*(long*)last_element);
-    _output_debug(*(long*)(last_element + 8));
-    _output_debug(*(long*)(last_element + 16));
-    *(long*)STDOUT = 'N';
-    *(long*)STDOUT = 10;
-#endif
-
-    return ret;
-}
-
-char *_get_new_sar_ext(long size, long align_size, shalloc_option_t option)
-{
-    char *ret;
-    long last_element;
-
-    //call a system call to ask for new SAR
-    ret = _syscall_malloc_ext(align_size, option);
+    ret = _syscall_malloc(align_size, option);
 
 #ifdef _DEBUG_MLC_
     output_char('s');
@@ -150,18 +108,21 @@ char *_get_new_sar_ext(long size, long align_size, shalloc_option_t option)
     output_char(C_n);
 #endif
     //push back this new SAR as the last element of SAR_ARRAY
-    last_element = *(long*) PR_SAR_ARRAY_LAST_ELEMENT;
+    last_element = *(long*) _SAR_ARRAY_LAST_ELEMENT;
 
-    *(char **) last_element = ret;
-    *((char **) (last_element + 8)) = ret + align_size;
-    *((char **) (last_element + 16)) = ret + size;
+    SAR_BASE(last_element) = ret;
+    SAR_SIZE(last_element) = align_size;
+    SAR_LTP(last_element) = ret + size;
+    SAR_OPTION(last_element) = option;
 
 #ifdef _DEBUG_MLC_
-    output_q_hex(*(long*)last_element);
+    output_q_hex(SAR_BASE(last_element));
     *(long*)STDOUT = 10;
-    output_q_hex(*(long*)(last_element + 8));
+    output_q_hex(SAR_SIZE(last_element));
     *(long*)STDOUT = 10;
-    output_q_hex(*(long*)(last_element + 16));
+    output_q_hex(SAR_LTP(last_element));
+    *(long*)STDOUT = 10;
+    output_q_hex(SAR_OPTION(last_element));
     *(long*)STDOUT = 10;
     *(long*)STDOUT = 'N';
     *(long*)STDOUT = 10;
@@ -170,51 +131,52 @@ char *_get_new_sar_ext(long size, long align_size, shalloc_option_t option)
     return ret;
 }
 
-
 //search in SAR_ARRAY
-char *_get_from_sar_array(long size)
+char *_get_from_sar_array(size_t size, shalloc_option_t option)
 {
     long i;
     long last_element;
     long *sar_array_element;
-    long old_value;
+    char *old_value;
 
 #ifdef _DEBUG_MLC_
-     _output_debug((long)PR_SAR_ARRAY_BASE);
-     _output_debug(*(long*)(PR_SAR_ARRAY_LAST_ELEMENT));
+     _output_debug((long)_SAR_ARRAY_BASE);
+     _output_debug(*(long*)(_SAR_ARRAY_LAST_ELEMENT));
      *(long*)STDOUT = 'Z';
      *(long*)STDOUT = 10;
 #endif
 
-    last_element = *(long*) PR_SAR_ARRAY_LAST_ELEMENT;
+    last_element = *(long*) _SAR_ARRAY_LAST_ELEMENT;
 
 
-    for(sar_array_element = (long*)PR_SAR_ARRAY_BASE;
+    for(sar_array_element = (long*)_SAR_ARRAY_BASE;
         (long)sar_array_element <= last_element;
-        sar_array_element = sar_array_element + 24)
+        sar_array_element = sar_array_element + sizeof_SAR)
     {
-
 #ifdef _DEBUG_MLC_
-        _output_debug(*sar_array_element);
-        _output_debug(*(sar_array_element + 8));
-        _output_debug(*(sar_array_element + 16));
-        _output_debug((*(sar_array_element + 8)) - (*(sar_array_element + 16)));
+        output_q_hex(SAR_BASE(sar_array_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_SIZE(sar_array_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_LTP(sar_array_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_OPTION(sar_array_element));
+        *(long*)STDOUT = 10;
         *(long*) STDOUT = 'Q';
         *(long*) STDOUT = 10;
 #endif
 
         //if we find a SAR has enough space to allocate requested memory
         //first-fit strategy
-        if(((*(sar_array_element + 8)) - (*(sar_array_element + 16))) >= size)
+        if((long)SAR_OPTION(sar_array_element) == (long)option && (long)SAR_SIZE(sar_array_element) >= (long)size)
         {
-
 #ifdef _DEBUG_MLC_
             *(long*) STDOUT = 'V';
             *(long*) STDOUT = 10;
 #endif
-            old_value = *(sar_array_element + 16);
-            *(sar_array_element + 16) = *(sar_array_element + 16) + size;
-            return  (char*) old_value;
+            old_value = SAR_LTP(sar_array_element);
+            SAR_LTP = SAR_LTP + size;
+            return  old_value;
         }
     }
 
@@ -222,9 +184,12 @@ char *_get_from_sar_array(long size)
     return (char*)NULL;
 }
 
-void* shalloc(long size)
+// allocate memory ranges according the the option
+// on success, return the allocated address
+// on fail, return NULL
+void *shalloc_ext(size_t size, shalloc_option_t option)
 {
-    long align_size;
+    size_t align_size;
     char* ret;
 
     //if input SIZE is not positive value.
@@ -232,34 +197,32 @@ void* shalloc(long size)
         return (void*)NULL;
 
 #ifdef STANDALONE_SHALLOC
-    size = s_align_to_page(size);
+    size = _align_to_page(size);
 #endif
 
     //align to a large area
-    align_size = s_align_to(size);
+    align_size = _s_align_to(size);
 
 #ifdef _DEBUG_MLC_
     output_q_hex(align_size);
-    *(long*) STDOUT = 10;
-    output_q(*(long*) PR_IS_USED);
-    *(long*) STDOUT = 10;
-    *(long*) STDOUT = 'K';
-    *(long*) STDOUT = 10;
+    output_char(C_n);
+    output_q_hex(*(long*) _IS_USED);
+    output_char(C_n);
 #endif
 
     //if SAR_ARRAY has not been initialized
     //then ask system for a shalloc area
-    if((long)(*(long *) PR_IS_USED) == 0)
+    if((long)(*(long *) _IS_USED) == 0)
     {
-        init_PR_var();
+        _init();
 
         //get new SAR from system.
-        ret = _get_new_sar(size, align_size);
+        ret = _get_new_sar(size, align_size, option);
     }
     else //if SAR_ARRAY has been initialized
     {
         //search from SAR_ARRAY, to get requested memory
-        ret = _get_from_sar_array(size);
+        ret = _get_from_sar_array(size, option);
 
 #ifdef _DEBUG_MLC_
         _output_debug((long)ret);
@@ -267,15 +230,14 @@ void* shalloc(long size)
         *(long*) STDOUT = 10;
 #endif
 
-        //if SIZE is too large to allocated in SAR_ARRAY,
         //then ask system for a shalloc area.
         if(ret == (char*) NULL)
         {
-            if ( (long)((*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24) < (long)PR_SAR_ARRAY_END )
+            if ( (long)((*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR) < (long)_SAR_ARRAY_END )
             {
-                *(long*) PR_SAR_ARRAY_LAST_ELEMENT = (*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24;
+                *(long*) _SAR_ARRAY_LAST_ELEMENT = (*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR;
                 //get new SAR from system.
-                ret = _get_new_sar(size, align_size);
+                ret = _get_new_sar(size, align_size, option);
             }
             else
                 ret = (char *)NULL;
@@ -288,144 +250,76 @@ void* shalloc(long size)
     return (void *) ret;
 }
 
+void *shalloc(size_t size) {
+    return shalloc_ext(size, SR_N);
+}
+
 //----------------------Pralloc-------------------------
 
 //align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
-long p_align_to(long size)
+size_t _p_align_to(size_t size)
 {
 #ifdef _DEBUG_MLC_
     _output_debug(size);
 #endif
-    return ((size - 1) / (P_ALIGN_TO_PAGE) + 1) * (P_ALIGN_TO_PAGE);
+    return ((size - 1) / (_P_ALIGN_TO_SIZE) + 1) * (_P_ALIGN_TO_SIZE);
 }
 
-void *_get_new_pa(long size)
+char *_get_new_pa(size_t size)
 {
-    long ret;
+    char *ret;
 
 #ifdef _DEBUG_MLC_
-    _output_debug(*(long*) PR_PA_TP);
+    _output_debug(*(long*) _PA_TP);
     *(long*) STDOUT = 'P';
     *(long*) STDOUT = 10;
 #endif
 
-    if ((long)((*(long*)PR_PA_TP) - size) >= (long)PR_PA_END )
+    if ((long)((*(long*)_PA_TP) - size) >= (long)_PA_END )
     {
-        *(long*) PR_PA_TP = *(long*) PR_PA_TP - size;
-        ret = *(long*) PR_PA_TP;
+        *(long*) _PA_TP = *(long*) _PA_TP - size;
+        ret = *(char**) _PA_TP;
     }
     else
-        ret = (long)NULL;
+        ret = (char *)NULL;
 
 #ifdef _DEBUG_MLC_
-    _output_debug(*(long*) PR_PA_TP);
+    _output_debug(*(long*) _PA_TP);
 #endif
 
-    return (void*)ret;
+    return ret;
 }
 
-void *pralloc(long size)
+void *pralloc(size_t size)
 {
-    long align_size;
-    void* ret;
+    size_t align_size;
+    char* ret;
 
     //if input SIZE is not positive value.
     if(size <= 0)
         return (void*)NULL;
 
     //align to a large area
-    align_size = p_align_to(size);
+    align_size = _p_align_to(size);
 
 #ifdef _DEBUG_MLC_
     _output_debug(align_size);
     *(long*) STDOUT = 10;
-    output_q(*(long*) PR_IS_USED);
+    output_q(*(long*) _IS_USED);
     *(long*) STDOUT = 10;
     *(long*) STDOUT = 'K';
     *(long*) STDOUT = 10;
 #endif
 
     //if pralloc area metadata has not been initialized
-    if((long)(*(long *) PR_IS_USED) == 0)
+    if((long)(*(long *) _IS_USED) == 0)
     {
-        init_PR_var();
+        _init();
     }
 
     //get new pralloc area from system.
     ret = _get_new_pa(align_size);
 
-    return ret;
+    return (void*) ret;
 }
 
-// // allocate memory ranges according the the option
-// // on success, return the allocated address
-// // on fail, return NULL
-// addr_t shalloc_ext(size_t size, shalloc_option_t option)
-// {
-//     long align_size;
-//     char* ret;
-//
-//     //if input SIZE is not positive value.
-//     if(size <= 0)
-//         return (void*)NULL;
-//
-// #ifdef STANDALONE_SHALLOC
-//     size = s_align_to_page(size);
-// #endif
-//
-//     //align to a large area
-//     align_size = s_align_to_ext(size);
-//
-// #ifdef _DEBUG_MLC_
-//     output_q_hex(align_size);
-//     output_char(C_n);
-//     output_q_hex(*(long*) PR_IS_USED);
-//     output_char(C_n);
-// #endif
-//
-//     //if SAR_ARRAY has not been initialized
-//     //then ask system for a shalloc area
-//     if((long)(*(long *) PR_IS_USED) == 0)
-//     {
-//         init_PR_var();
-//
-//         //get new SAR from system.
-//         ret = _get_new_sar_ext(size, align_size, option);
-//     }
-//     else //if SAR_ARRAY has been initialized
-//     {
-//         // skip SAR_ARRAY
-//         ret = (char*)NULL;
-//
-//         //then ask system for a shalloc area.
-//         if(ret == (char*) NULL)
-//         {
-//             if ( (long)((*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24) < (long)PR_SAR_ARRAY_END )
-//             {
-//                 *(long*) PR_SAR_ARRAY_LAST_ELEMENT = (*(long*) PR_SAR_ARRAY_LAST_ELEMENT) + 24;
-//                 //get new SAR from system.
-//                 ret = _get_new_sar_ext(size, align_size, option);
-//             }
-//             else
-//                 ret = (char *)NULL;
-//                 //TODO: not return null.
-//                 //LATS_ELEMENT should restart from BASE, to overlap oldest element.
-//
-//         }
-//     }
-//
-//     return (void *) ret;
-// }
-//
-// // addr is the addr_t returned by shalloc_ext
-// // nth is the nth range in the replication group.
-// // addr is the 0th replica
-// addr_t shalloced_replicas(addr_t addr, size_t nth)
-// {
-//     long inc;
-//
-//     inc = PMEM_N_SIZE / MM_REPLICATION_FACTOR;
-//     inc = addr + inc * nth;
-//
-//     return inc;
-// }
