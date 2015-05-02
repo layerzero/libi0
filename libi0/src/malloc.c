@@ -1,7 +1,7 @@
 #include "malloc.h"
 
 //remove following comment to get some debug output.
-#define _DEBUG_MLC_
+//#define _DEBUG_MLC_
 
 void _output_debug(long x)
 {
