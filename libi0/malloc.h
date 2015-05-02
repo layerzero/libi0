@@ -23,7 +23,7 @@
 //the end address of shalloc area range array
 //is a const value
 //0x10000 elements in sar_array
-#define _SAR_ARRAY_END (0x300183008)
+#define _SAR_ARRAY_END (0x300203008)
 
 //the last element in shalloc area range array
 //is a variable

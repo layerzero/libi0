@@ -1,7 +1,7 @@
 #include "malloc.h"
 
 //remove following comment to get some debug output.
-// #define _DEBUG_MLC_
+#define _DEBUG_MLC_
 
 void _output_debug(long x)
 {
@@ -34,16 +34,6 @@ void _output_debug(long x)
     return;
 }
 
-void _init()
-{
-    *(long*) _SAR_ARRAY_LAST_ELEMENT = (long) _SAR_ARRAY_BASE;
-    *(long*) _PA_TP = (long) _PA_BASE;
-    *(long*) _IS_USED = 1;
-
-    return;
-}
-
-//---------------------Shalloc----------------------------
 //Shalloc Area Range = SAR
 /*struct Shalloc_Area_Range {
     char *BASE;
@@ -57,6 +47,16 @@ void _init()
 #define SAR_OPTION(x) (*(shalloc_option_t*)(x + sizeof_uint64_t * 2 + sizeof_long))
 #define sizeof_SAR (sizeof_uint64_t * 2 + sizeof_long + sizeof_shalloc_option_t)
 
+void _init()
+{
+    *(long*) _SAR_ARRAY_LAST_ELEMENT = (long) _SAR_ARRAY_BASE - sizeof_SAR;
+    *(long*) _PA_TP = (long) _PA_BASE;
+    *(long*) _IS_USED = 1;
+
+    return;
+}
+
+//---------------------Shalloc----------------------------
 char *_syscall_malloc(size_t size, shalloc_option_t option)
 {
     //set system call id
@@ -77,9 +77,6 @@ char *_syscall_malloc(size_t size, shalloc_option_t option)
 //align size to a large number, which should always be a multiplier of PAGE_SIZE(512)
 size_t _s_align_to(size_t size)
 {
-#ifdef _DEBUG_MLC_
-    _output_debug(size);
-#endif
     return ((size - 1) / (_S_ALIGN_TO_SIZE) + 1) * (_S_ALIGN_TO_SIZE);
 }
 
@@ -107,26 +104,31 @@ char *_get_new_sar(size_t size, size_t align_size, shalloc_option_t option)
     output_q_hex(ret);
     output_char(C_n);
 #endif
-    //push back this new SAR as the last element of SAR_ARRAY
-    last_element = *(long*) _SAR_ARRAY_LAST_ELEMENT;
+    if((long)ret != NULL) {
+        *(long*) _SAR_ARRAY_LAST_ELEMENT = (*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR;
 
-    SAR_BASE(last_element) = ret;
-    SAR_SIZE(last_element) = align_size;
-    SAR_LTP(last_element) = ret + size;
-    SAR_OPTION(last_element) = option;
+        //push back this new SAR as the last element of SAR_ARRAY
+        last_element = *(long*) _SAR_ARRAY_LAST_ELEMENT;
+
+        SAR_BASE(last_element) = ret;
+        SAR_SIZE(last_element) = align_size;
+        SAR_LTP(last_element) = ret + size;
+        SAR_OPTION(last_element) = option;
 
 #ifdef _DEBUG_MLC_
-    output_q_hex(SAR_BASE(last_element));
-    *(long*)STDOUT = 10;
-    output_q_hex(SAR_SIZE(last_element));
-    *(long*)STDOUT = 10;
-    output_q_hex(SAR_LTP(last_element));
-    *(long*)STDOUT = 10;
-    output_q_hex(SAR_OPTION(last_element));
-    *(long*)STDOUT = 10;
-    *(long*)STDOUT = 'N';
-    *(long*)STDOUT = 10;
+        output_q_hex(SAR_BASE(last_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_SIZE(last_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_LTP(last_element));
+        *(long*)STDOUT = 10;
+        output_q_hex(SAR_OPTION(last_element));
+        *(long*)STDOUT = 10;
+        *(long*)STDOUT = 'N';
+        *(long*)STDOUT = 10;
 #endif
+
+    }
 
     return ret;
 }
@@ -148,7 +150,6 @@ char *_get_from_sar_array(size_t size, shalloc_option_t option)
 
     last_element = *(long*) _SAR_ARRAY_LAST_ELEMENT;
 
-
     for(sar_array_element = (long*)_SAR_ARRAY_BASE;
         (long)sar_array_element <= last_element;
         sar_array_element = sar_array_element + sizeof_SAR)
@@ -168,15 +169,18 @@ char *_get_from_sar_array(size_t size, shalloc_option_t option)
 
         //if we find a SAR has enough space to allocate requested memory
         //first-fit strategy
-        if((long)SAR_OPTION(sar_array_element) == (long)option && (long)SAR_SIZE(sar_array_element) >= (long)size)
+        if((long)SAR_OPTION(sar_array_element) == (long)option) 
         {
+            if((long)SAR_SIZE(sar_array_element) >= (long)SAR_LTP(sar_array_element) - (long)SAR_BASE(sar_array_element) + (long)size)
+            {
 #ifdef _DEBUG_MLC_
-            *(long*) STDOUT = 'V';
-            *(long*) STDOUT = 10;
+                *(long*) STDOUT = 'V';
+                *(long*) STDOUT = 10;
 #endif
-            old_value = SAR_LTP(sar_array_element);
-            SAR_LTP = SAR_LTP + size;
-            return  old_value;
+                old_value = SAR_LTP(sar_array_element);
+                SAR_LTP(sar_array_element) = SAR_LTP(sar_array_element) + size;
+                return  old_value;
+            }
         }
     }
 
@@ -196,6 +200,11 @@ void *shalloc_ext(size_t size, shalloc_option_t option)
     if(size <= 0)
         return (void*)NULL;
 
+#ifdef _DEBUG_MLC_
+    output_q_hex(size);
+    *(long*)STDOUT = 10;
+#endif
+
 #ifdef STANDALONE_SHALLOC
     size = _align_to_page(size);
 #endif
@@ -204,6 +213,8 @@ void *shalloc_ext(size_t size, shalloc_option_t option)
     align_size = _s_align_to(size);
 
 #ifdef _DEBUG_MLC_
+    output_q_hex(size);
+    output_char(C_n);
     output_q_hex(align_size);
     output_char(C_n);
     output_q_hex(*(long*) _IS_USED);
@@ -233,9 +244,8 @@ void *shalloc_ext(size_t size, shalloc_option_t option)
         //then ask system for a shalloc area.
         if(ret == (char*) NULL)
         {
-            if ( (long)((*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR) < (long)_SAR_ARRAY_END )
+            if ( (long)((*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR * 2) < (long)_SAR_ARRAY_END )
             {
-                *(long*) _SAR_ARRAY_LAST_ELEMENT = (*(long*) _SAR_ARRAY_LAST_ELEMENT) + sizeof_SAR;
                 //get new SAR from system.
                 ret = _get_new_sar(size, align_size, option);
             }
