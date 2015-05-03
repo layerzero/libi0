@@ -285,7 +285,7 @@ char *_get_new_pa(size_t size)
     *(long*) STDOUT = 10;
 #endif
 
-    if ((long)((*(long*)_PA_TP) - size) >= (long)_PA_END )
+    if ((long)((*(long*)_PA_TP) - size) > (long)_PA_END )
     {
         *(long*) _PA_TP = *(long*) _PA_TP - size;
         ret = *(char**) _PA_TP;
