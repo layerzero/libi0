@@ -39,12 +39,13 @@
 //---------------------End of Shalloc Defination---------------------
 
 //---------------------Pralloc Defination----------------------------
+//pralloc area range array: [_PA_END, _PA_BASE)
 //the base address of pralloc area range array
 #define _PA_BASE (0x3FFFF0000)
 //the number of elements in pralloc area range array
 #define _PA_SIZE (0xFFDF0000)
 //the end address of pralloc area range array
-#define _PA_END (_PA_BASE + _PA_SIZE)
+#define _PA_END (_PA_BASE - _PA_SIZE)
 
 //the last element in pralloc area range array
 //is a variable
