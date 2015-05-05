@@ -51,8 +51,8 @@
 //is a variable
 #define _PA_TP (0x3FFFFFFF8)
 
-//any requested size can be aligned to a size, like 4K bytes (a page size).
-#define _P_ALIGN_TO_SIZE (0x1000)
+//any requested size can be aligned to a size.
+#define _P_ALIGN_TO_SIZE (0x1)
 //---------------------End of Pralloc Defination---------------------
 
 void *shalloc_ext(size_t size, shalloc_option_t option);
