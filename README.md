@@ -1,6 +1,6 @@
 #libi0
 
-libi0 is a general library for writing Puc code. Puc is a variation of the C programming language with support to language-level multi-tasking and mechanisms in Data Thinker which unifies myriads of nodes in the datacenters to form an efficient and scalable substrade for big data processing.
+libi0 is a general library for writing Puc code. Puc is a variation of the C programming language with support to language-level multi-tasking and mechanisms in [Data Thinker](http://d-thinker.org) which unifies myriads of nodes in the datacenters to form an efficient and scalable substrade for big data processing.
 
 #Forum
 
