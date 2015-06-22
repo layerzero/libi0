@@ -57,3 +57,13 @@ long remainder(long dividend, long divisor) {
 	return res;
 }
 
+double floor(double x) {
+  if (x>=0) {
+    return (double)(long)x;
+  } else if (x == (long)x) {
+    return x;
+  } else {
+    return -1.0*floor(-1*x)-1.0;
+  }
+}
+
