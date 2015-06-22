@@ -12,4 +12,7 @@ long remainder(long dividend, long divisor);
 // return the largest integral value less than or equal to x
 double floor(double x);
 
+// return the smallest integral value greater than or equal to x
+double ceil(double x);
+
 #endif // I0MATH_H
