@@ -67,3 +67,13 @@ double floor(double x) {
   }
 }
 
+double ceil(double x) {
+  if (x<=0) {
+    return (double)(long)x;
+  } else if (x == (long)x) {
+    return x;
+  } else {
+    return -1.0*ceil(-1*x)+1.0;
+  }
+}
+
