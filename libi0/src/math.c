@@ -78,23 +78,22 @@ double ceil(double x) {
 }
 
 double sin(double x) {
-  double pi, sign;
+  double sign;
   double x2, x3, x5, x7, x9, x11, x13;
-  pi = 3.1415926535897932384626433832795;
   sign = 1.0;
 
   // reduce to [0, 2pi)
-  x = x - floor(x/(2*pi))*2*pi;
+  x = x - floor(x/(2*M_PI))*2*M_PI;
 
   // reduce to [0, pi)
-  if (x>pi) {
-    x = x - pi;
+  if (x>M_PI) {
+    x = x - M_PI;
     sign = -1;
   }
 
   // reduce to [0, pi/2)
-  if (x>pi/2) {
-    x = pi - x;
+  if (x>M_PI_2) {
+    x = M_PI - x;
   }
 
   x2 = x*x;
@@ -110,9 +109,7 @@ double sin(double x) {
 }
 
 double cos(double x) {
-  double pi_half;
-  pi_half = 1.5707963267948966192313216916398;
-  return sin(pi_half-x);
+  return sin(M_PI_2-x);
 }
 
 double tan(double x) {
