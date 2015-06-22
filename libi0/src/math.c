@@ -77,3 +77,44 @@ double ceil(double x) {
   }
 }
 
+double sin(double x) {
+  double pi, sign;
+  double x2, x3, x5, x7, x9, x11, x13;
+  pi = 3.1415926535897932384626433832795;
+  sign = 1.0;
+
+  // reduce to [0, 2pi)
+  x = x - floor(x/(2*pi))*2*pi;
+
+  // reduce to [0, pi)
+  if (x>pi) {
+    x = x - pi;
+    sign = -1;
+  }
+
+  // reduce to [0, pi/2)
+  if (x>pi/2) {
+    x = pi - x;
+  }
+
+  x2 = x*x;
+  x3 = x*x2;
+  x5 = x3*x2;
+  x7 = x5*x2;
+  x9 = x7*x2;
+  x11 = x9*x2;
+  x13 = x11*x2;
+
+  // Taylor expansion to x^13
+  return sign*(x-x3/6+x5/120-x7/5040+x9/362880-x11/39916800+x13/6227020800);
+}
+
+double cos(double x) {
+  double pi_half;
+  pi_half = 1.5707963267948966192313216916398;
+  return sin(pi_half-x);
+}
+
+double tan(double x) {
+  return (sin(x)/cos(x));
+}

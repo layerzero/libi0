@@ -15,4 +15,9 @@ double floor(double x);
 // return the smallest integral value greater than or equal to x
 double ceil(double x);
 
+// Trigonometric functions:
+double sin(double x);
+double cos(double x);
+double tan(double x);
+
 #endif // I0MATH_H
