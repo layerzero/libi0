@@ -9,4 +9,7 @@ double sqrt(double x);
 // simulate a fast % (modulus) operation (mathematical version)
 long remainder(long dividend, long divisor);
 
+// return the largest integral value less than or equal to x
+double floor(double x);
+
 #endif // I0MATH_H
