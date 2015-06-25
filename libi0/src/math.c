@@ -34,6 +34,17 @@ double exp(double x)
     return ret;
 }
 
+double log(double x) {
+  double y, ey;
+  y = x;
+  ey = exp(y);
+  while (ey > x+1e-10) {
+    y = y - 1 + x/ey;
+    ey = exp(y);
+  }
+  return y;
+}
+
 double sqrt(double x)
 {
     double n;
