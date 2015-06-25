@@ -7,6 +7,7 @@
 
 long ipow(long base, long exp);
 double exp(double x);
+double log(double x);
 double sqrt(double x);
 
 // simulate a fast % (modulus) operation (mathematical version)
