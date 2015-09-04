@@ -18,12 +18,12 @@ long systemMsg(char *command, msg_option_t option)
     return rt;
 }
 
-msg_option_t create_single_msg_option(char *addr, uint64_t len)
+msg_option_t create_single_msg_option(char *addr)
 {
     /* msg_option_block:
        struct {
        long cnt;
-       struct{long addr, long len} fields[2*cnt];
+       struct{long addr, long} fields[cnt];
        }
     */
 
@@ -34,7 +34,8 @@ msg_option_t create_single_msg_option(char *addr, uint64_t len)
     *block = 1;
 
     *(long*)((uint64_t)block + sizeof_int64_t) = (long)addr;
-    *(long*)((uint64_t)block + 2 * sizeof_int64_t) = (long)len;
+    // to be filled by runtime;
+    *(long*)((uint64_t)block + 2 * sizeof_int64_t) = 0; 
 
     return (msg_option_t)block;
 }

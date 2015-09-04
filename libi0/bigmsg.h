@@ -9,6 +9,6 @@ option_block_t msg_option_to_option(msg_option_t option);
 
 long systemMsg(char *command, msg_option_t option);
 
-msg_option_t create_single_msg_option(char *addr, uint64_t len);
+msg_option_t create_single_msg_option(char *addr);
 
 #endif // _BIGMSG_H_
