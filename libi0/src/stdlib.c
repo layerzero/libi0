@@ -1,3 +1,6 @@
+/* Implementation of Puc runtime functions
+   Copyright 2014-15, Hututa Technologies */
+
 #include "stdlib.h"
 
 // Note: will also read in an extra char
