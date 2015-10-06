@@ -1,3 +1,7 @@
+Note: Latest development of the Puc library are in http://tab.d-thinker.org/showthread.php?tid=4387 
+
+This repository is kept read-only for historical references.
+
 #libi0
 
 libi0 is a general library for writing Puc code. Puc is a variation of the C programming language with support to language-level multi-tasking and mechanisms in [Data Thinker](http://d-thinker.org) which unifies myriads of nodes in the datacenters to form an efficient and scalable substrade for big data processing.
